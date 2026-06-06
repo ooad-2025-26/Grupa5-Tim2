@@ -1,8 +1,44 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Početna";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div style="display: flex; align-items: center;
+    min-height: 85vh; padding: 0 60px; gap: 40px;">
+    
+    <!-- Lijeva strana - tekst -->
+    <div style="flex: 0 0 40%; padding-right: 20px;">
+        <h1 style="font-size: 4.5rem; font-weight: 800;
+            color: #1a4a3a; margin-bottom: 15px;
+            line-height: 1.1;">
+            LitHub
+        </h1>
+        <h3 style="color: #1a4a3a; font-weight: 600;
+            margin-bottom: 20px; font-size: 1.2rem;">
+            Sistem za upravljanje bibliotekom
+        </h3>
+        <p style="color: #666; font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 35px;">
+            Pronađite, posudite i vratite knjige na jednostavan
+            i brz način. Registrujte se i postanite dio naše biblioteke.
+        </p>
+        <a asp-controller="Knjiga" asp-action="Index"
+               style="background-color: #c8621a; color: white;
+            border-radius: 25px; padding: 14px 40px;
+            font-weight: 700; font-size: 0.9rem;
+            letter-spacing: 0.1rem; text-transform: uppercase;
+            text-decoration: none; display: inline-block;">
+            PRETRAŽI
+        </a>
+    </div>
+
+    <!-- Desna strana - slika -->
+    <div style="flex: 0 0 60%; height: 85vh;
+        overflow: hidden; margin-right: -60px;">
+        <img src="~/images/pocetna.jpg"
+             style="width: 100%; height: 100%;
+        object-fit: cover;
+        object-position: left center;" />
+    </div>
+
 </div>

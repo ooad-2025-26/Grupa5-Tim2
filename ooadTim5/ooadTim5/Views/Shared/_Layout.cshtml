@@ -1,51 +1,173 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="bs">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - LitHub</title>
-    <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/ooadTim5.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <style>
+            body {
+                background-color: #f9f5f0;
+                font-family: 'Segoe UI', sans-serif;
+            }
+
+            .navbar-lithub {
+                background-color: #f9f5f0;
+                border-bottom: 1px solid #e0d8cf;
+                padding: 15px 30px;
+            }
+
+            .navbar-brand-lithub {
+                font-size: 1.5rem;
+                font-weight: 700;
+                color: #1a4a3a !important;
+                text-decoration: none;
+                margin-right: 30px;
+            }
+
+                .navbar-brand-lithub:hover {
+                    color: #1a4a3a !important;
+                }
+
+            .nav-link-lithub {
+                color: #1a4a3a !important;
+                font-weight: 600;
+                font-size: 0.85rem;
+                letter-spacing: 0.05rem;
+                text-transform: uppercase;
+                margin-right: 20px;
+                text-decoration: none;
+            }
+
+                .nav-link-lithub:hover {
+                    color: #c8621a !important;
+                }
+
+            .btn-prijava {
+                border: 2px solid #1a4a3a;
+                color: #1a4a3a;
+                background: transparent;
+                border-radius: 25px;
+                padding: 6px 20px;
+                font-weight: 600;
+                font-size: 0.85rem;
+                letter-spacing: 0.05rem;
+                text-transform: uppercase;
+                text-decoration: none;
+                margin-right: 10px;
+            }
+
+                .btn-prijava:hover {
+                    background-color: #1a4a3a;
+                    color: white;
+                }
+
+            .btn-registracija {
+                background-color: #c8621a;
+                color: white;
+                border: none;
+                border-radius: 25px;
+                padding: 6px 20px;
+                font-weight: 600;
+                font-size: 0.85rem;
+                letter-spacing: 0.05rem;
+                text-transform: uppercase;
+                text-decoration: none;
+            }
+
+                .btn-registracija:hover {
+                    background-color: #a8521a;
+                    color: white;
+                }
+
+            .main-content {
+                min-height: calc(100vh - 140px);
+            }
+
+            footer {
+                background-color: #1a4a3a;
+                color: #ccc;
+                padding: 20px 0;
+                font-size: 0.85rem;
+            }
+
+                footer a {
+                    color: #c8621a;
+                    text-decoration: none;
+                }
+    </style>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ooadTim5</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                    <partial name="_LoginPartial" />
+
+    <!-- NAVIGACIJA -->
+    <nav class="navbar navbar-expand-md navbar-lithub">
+        <div class="container-fluid px-4">
+
+            <!-- Logo i naziv -->
+            <a class="navbar-brand-lithub" asp-controller="Home" asp-action="Index">
+                📖 LitHub
+            </a>
+
+            <!-- Hamburger za mobilne -->
+            <button class="navbar-toggler" type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Linkovi -->
+            <div class="collapse navbar-collapse" id="navbarContent">
+
+                <!-- Lijeva strana -->
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link-lithub"
+                           asp-controller="Home"
+                           asp-action="Index">Početna</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link-lithub"
+                           asp-controller="Home"
+                           asp-action="ONama">O nama</a>
+                    </li>
+                </ul>
+
+                <!-- Desna strana -->
+                <div class="d-flex align-items-center">
+                    <a class="btn-prijava"
+                       asp-controller="Home"
+                       asp-action="Prijava">Prijava</a>
+                    <a class="btn-registracija"
+                       asp-controller="Home"
+                       asp-action="Registracija">Registracija</a>
                 </div>
+
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+        </div>
+    </nav>
+
+    <!-- GLAVNI SADRŽAJ -->
+    <div class="main-content">
+        <main role="main">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - LitHub - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <!-- FOOTER -->
+    <footer>
+        <div class="container text-center">
+            <p class="mb-0">
+                &copy; 2025 LitHub — Sistem za upravljanje bibliotekom |
+                <a asp-controller="Home" asp-action="ONama">O nama</a>
+            </p>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
 </body>
 </html>

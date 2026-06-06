@@ -10,23 +10,23 @@ using ooadTim5.Models;
 
 namespace ooadTim5.Controllers
 {
-    public class PosudbaController : Controller
+    public class ZahtjevZaPosudbuController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public PosudbaController(ApplicationDbContext context)
+        public ZahtjevZaPosudbuController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Posudba
+        // GET: ZahtjevZaPosudbu
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Posudbe.Include(p => p.Knjiga);
+            var applicationDbContext = _context.Zahtjevi.Include(z => z.Knjiga);
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Posudba/Details/5
+        // GET: ZahtjevZaPosudbu/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,42 +34,42 @@ namespace ooadTim5.Controllers
                 return NotFound();
             }
 
-            var posudba = await _context.Posudbe
-                .Include(p => p.Knjiga)
+            var zahtjevZaPosudbu = await _context.Zahtjevi
+                .Include(z => z.Knjiga)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (posudba == null)
+            if (zahtjevZaPosudbu == null)
             {
                 return NotFound();
             }
 
-            return View(posudba);
+            return View(zahtjevZaPosudbu);
         }
 
-        // GET: Posudba/Create
+        // GET: ZahtjevZaPosudbu/Create
         public IActionResult Create()
         {
             ViewData["KnjigaId"] = new SelectList(_context.Knjige, "Id", "Autor");
             return View();
         }
 
-        // POST: Posudba/Create
+        // POST: ZahtjevZaPosudbu/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,KnjigaId,ClanId,DatumPosudbe,OcekivaniDatumVracanja,DatumVracanja,Status,Napomena")] Posudba posudba)
+        public async Task<IActionResult> Create([Bind("Id,KorisnikId,KnjigaId,DatumZahtjeva,Status,RazlogOdbijanja")] ZahtjevZaPosudbu zahtjevZaPosudbu)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(posudba);
+                _context.Add(zahtjevZaPosudbu);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["KnjigaId"] = new SelectList(_context.Knjige, "Id", "Autor", posudba.KnjigaId);
-            return View(posudba);
+            ViewData["KnjigaId"] = new SelectList(_context.Knjige, "Id", "Autor", zahtjevZaPosudbu.KnjigaId);
+            return View(zahtjevZaPosudbu);
         }
 
-        // GET: Posudba/Edit/5
+        // GET: ZahtjevZaPosudbu/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -77,23 +77,23 @@ namespace ooadTim5.Controllers
                 return NotFound();
             }
 
-            var posudba = await _context.Posudbe.FindAsync(id);
-            if (posudba == null)
+            var zahtjevZaPosudbu = await _context.Zahtjevi.FindAsync(id);
+            if (zahtjevZaPosudbu == null)
             {
                 return NotFound();
             }
-            ViewData["KnjigaId"] = new SelectList(_context.Knjige, "Id", "Autor", posudba.KnjigaId);
-            return View(posudba);
+            ViewData["KnjigaId"] = new SelectList(_context.Knjige, "Id", "Autor", zahtjevZaPosudbu.KnjigaId);
+            return View(zahtjevZaPosudbu);
         }
 
-        // POST: Posudba/Edit/5
+        // POST: ZahtjevZaPosudbu/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,KnjigaId,ClanId,DatumPosudbe,OcekivaniDatumVracanja,DatumVracanja,Status,Napomena")] Posudba posudba)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,KorisnikId,KnjigaId,DatumZahtjeva,Status,RazlogOdbijanja")] ZahtjevZaPosudbu zahtjevZaPosudbu)
         {
-            if (id != posudba.Id)
+            if (id != zahtjevZaPosudbu.Id)
             {
                 return NotFound();
             }
@@ -102,12 +102,12 @@ namespace ooadTim5.Controllers
             {
                 try
                 {
-                    _context.Update(posudba);
+                    _context.Update(zahtjevZaPosudbu);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PosudbaExists(posudba.Id))
+                    if (!ZahtjevZaPosudbuExists(zahtjevZaPosudbu.Id))
                     {
                         return NotFound();
                     }
@@ -118,11 +118,11 @@ namespace ooadTim5.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["KnjigaId"] = new SelectList(_context.Knjige, "Id", "Autor", posudba.KnjigaId);
-            return View(posudba);
+            ViewData["KnjigaId"] = new SelectList(_context.Knjige, "Id", "Autor", zahtjevZaPosudbu.KnjigaId);
+            return View(zahtjevZaPosudbu);
         }
 
-        // GET: Posudba/Delete/5
+        // GET: ZahtjevZaPosudbu/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -130,35 +130,35 @@ namespace ooadTim5.Controllers
                 return NotFound();
             }
 
-            var posudba = await _context.Posudbe
-                .Include(p => p.Knjiga)
+            var zahtjevZaPosudbu = await _context.Zahtjevi
+                .Include(z => z.Knjiga)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (posudba == null)
+            if (zahtjevZaPosudbu == null)
             {
                 return NotFound();
             }
 
-            return View(posudba);
+            return View(zahtjevZaPosudbu);
         }
 
-        // POST: Posudba/Delete/5
+        // POST: ZahtjevZaPosudbu/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var posudba = await _context.Posudbe.FindAsync(id);
-            if (posudba != null)
+            var zahtjevZaPosudbu = await _context.Zahtjevi.FindAsync(id);
+            if (zahtjevZaPosudbu != null)
             {
-                _context.Posudbe.Remove(posudba);
+                _context.Zahtjevi.Remove(zahtjevZaPosudbu);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool PosudbaExists(int id)
+        private bool ZahtjevZaPosudbuExists(int id)
         {
-            return _context.Posudbe.Any(e => e.Id == id);
+            return _context.Zahtjevi.Any(e => e.Id == id);
         }
     }
 }

@@ -6,6 +6,21 @@ namespace ooadTim5.Controllers
 {
     public class HomeController : Controller
     {
+
+        public IActionResult ONama()
+        {
+            return View();
+        }
+
+        public IActionResult Prijava()
+        {
+            return View();
+        }
+
+        public IActionResult Registracija()
+        {
+            return View();
+        }
         public IActionResult Index()
         {
             return View();

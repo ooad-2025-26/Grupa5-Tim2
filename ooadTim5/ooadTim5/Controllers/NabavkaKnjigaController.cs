@@ -10,11 +10,11 @@ using ooadTim5.Models;
 
 namespace ooadTim5.Controllers
 {
-    public class NabavkaController : Controller
+    public class NabavkaKnjigaController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public NabavkaController(ApplicationDbContext context)
+        public NabavkaKnjigaController(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -49,8 +49,8 @@ namespace ooadTim5.Controllers
         // GET: NabavkaKnjiga/Create
         public IActionResult Create()
         {
-            ViewData["DobavljacId"] = new SelectList(_context.Dobavljaci, "Id", "Id");
-            ViewData["KnjigaId"] = new SelectList(_context.Knjige, "Id", "Id");
+            ViewData["DobavljacId"] = new SelectList(_context.Dobavljaci, "Id", "KontaktEmail");
+            ViewData["KnjigaId"] = new SelectList(_context.Knjige, "Id", "Autor");
             return View();
         }
 
@@ -67,8 +67,8 @@ namespace ooadTim5.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DobavljacId"] = new SelectList(_context.Dobavljaci, "Id", "Id", nabavkaKnjiga.DobavljacId);
-            ViewData["KnjigaId"] = new SelectList(_context.Knjige, "Id", "Id", nabavkaKnjiga.KnjigaId);
+            ViewData["DobavljacId"] = new SelectList(_context.Dobavljaci, "Id", "KontaktEmail", nabavkaKnjiga.DobavljacId);
+            ViewData["KnjigaId"] = new SelectList(_context.Knjige, "Id", "Autor", nabavkaKnjiga.KnjigaId);
             return View(nabavkaKnjiga);
         }
 
@@ -85,8 +85,8 @@ namespace ooadTim5.Controllers
             {
                 return NotFound();
             }
-            ViewData["DobavljacId"] = new SelectList(_context.Dobavljaci, "Id", "Id", nabavkaKnjiga.DobavljacId);
-            ViewData["KnjigaId"] = new SelectList(_context.Knjige, "Id", "Id", nabavkaKnjiga.KnjigaId);
+            ViewData["DobavljacId"] = new SelectList(_context.Dobavljaci, "Id", "KontaktEmail", nabavkaKnjiga.DobavljacId);
+            ViewData["KnjigaId"] = new SelectList(_context.Knjige, "Id", "Autor", nabavkaKnjiga.KnjigaId);
             return View(nabavkaKnjiga);
         }
 
@@ -122,8 +122,8 @@ namespace ooadTim5.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DobavljacId"] = new SelectList(_context.Dobavljaci, "Id", "Id", nabavkaKnjiga.DobavljacId);
-            ViewData["KnjigaId"] = new SelectList(_context.Knjige, "Id", "Id", nabavkaKnjiga.KnjigaId);
+            ViewData["DobavljacId"] = new SelectList(_context.Dobavljaci, "Id", "KontaktEmail", nabavkaKnjiga.DobavljacId);
+            ViewData["KnjigaId"] = new SelectList(_context.Knjige, "Id", "Autor", nabavkaKnjiga.KnjigaId);
             return View(nabavkaKnjiga);
         }
 
