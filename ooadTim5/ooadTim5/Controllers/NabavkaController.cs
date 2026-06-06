@@ -10,22 +10,23 @@ using ooadTim5.Models;
 
 namespace ooadTim5.Controllers
 {
-    public class DobavljacController : Controller
+    public class NabavkaController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public DobavljacController(ApplicationDbContext context)
+        public NabavkaController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Dobavljac
+        // GET: NabavkaKnjiga
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Dobavljaci.ToListAsync());
+            var applicationDbContext = _context.Nabavke.Include(n => n.Dobavljac).Include(n => n.Knjiga);
+            return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Dobavljac/Details/5
+        // GET: NabavkaKnjiga/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,39 +34,45 @@ namespace ooadTim5.Controllers
                 return NotFound();
             }
 
-            var dobavljac = await _context.Dobavljaci
+            var nabavkaKnjiga = await _context.Nabavke
+                .Include(n => n.Dobavljac)
+                .Include(n => n.Knjiga)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (dobavljac == null)
+            if (nabavkaKnjiga == null)
             {
                 return NotFound();
             }
 
-            return View(dobavljac);
+            return View(nabavkaKnjiga);
         }
 
-        // GET: Dobavljac/Create
+        // GET: NabavkaKnjiga/Create
         public IActionResult Create()
         {
+            ViewData["DobavljacId"] = new SelectList(_context.Dobavljaci, "Id", "Id");
+            ViewData["KnjigaId"] = new SelectList(_context.Knjige, "Id", "Id");
             return View();
         }
 
-        // POST: Dobavljac/Create
+        // POST: NabavkaKnjiga/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Naziv,KontaktEmail,KontaktTelefon,Adresa")] Dobavljac dobavljac)
+        public async Task<IActionResult> Create([Bind("Id,KnjigaId,DobavljacId,Kolicina,DatumNarudzbe,OcekivaniDatumIsporuke,Status")] NabavkaKnjiga nabavkaKnjiga)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(dobavljac);
+                _context.Add(nabavkaKnjiga);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(dobavljac);
+            ViewData["DobavljacId"] = new SelectList(_context.Dobavljaci, "Id", "Id", nabavkaKnjiga.DobavljacId);
+            ViewData["KnjigaId"] = new SelectList(_context.Knjige, "Id", "Id", nabavkaKnjiga.KnjigaId);
+            return View(nabavkaKnjiga);
         }
 
-        // GET: Dobavljac/Edit/5
+        // GET: NabavkaKnjiga/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -73,22 +80,24 @@ namespace ooadTim5.Controllers
                 return NotFound();
             }
 
-            var dobavljac = await _context.Dobavljaci.FindAsync(id);
-            if (dobavljac == null)
+            var nabavkaKnjiga = await _context.Nabavke.FindAsync(id);
+            if (nabavkaKnjiga == null)
             {
                 return NotFound();
             }
-            return View(dobavljac);
+            ViewData["DobavljacId"] = new SelectList(_context.Dobavljaci, "Id", "Id", nabavkaKnjiga.DobavljacId);
+            ViewData["KnjigaId"] = new SelectList(_context.Knjige, "Id", "Id", nabavkaKnjiga.KnjigaId);
+            return View(nabavkaKnjiga);
         }
 
-        // POST: Dobavljac/Edit/5
+        // POST: NabavkaKnjiga/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Naziv,KontaktEmail,KontaktTelefon,Adresa")] Dobavljac dobavljac)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,KnjigaId,DobavljacId,Kolicina,DatumNarudzbe,OcekivaniDatumIsporuke,Status")] NabavkaKnjiga nabavkaKnjiga)
         {
-            if (id != dobavljac.Id)
+            if (id != nabavkaKnjiga.Id)
             {
                 return NotFound();
             }
@@ -97,12 +106,12 @@ namespace ooadTim5.Controllers
             {
                 try
                 {
-                    _context.Update(dobavljac);
+                    _context.Update(nabavkaKnjiga);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DobavljacExists(dobavljac.Id))
+                    if (!NabavkaKnjigaExists(nabavkaKnjiga.Id))
                     {
                         return NotFound();
                     }
@@ -113,10 +122,12 @@ namespace ooadTim5.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(dobavljac);
+            ViewData["DobavljacId"] = new SelectList(_context.Dobavljaci, "Id", "Id", nabavkaKnjiga.DobavljacId);
+            ViewData["KnjigaId"] = new SelectList(_context.Knjige, "Id", "Id", nabavkaKnjiga.KnjigaId);
+            return View(nabavkaKnjiga);
         }
 
-        // GET: Dobavljac/Delete/5
+        // GET: NabavkaKnjiga/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -124,34 +135,36 @@ namespace ooadTim5.Controllers
                 return NotFound();
             }
 
-            var dobavljac = await _context.Dobavljaci
+            var nabavkaKnjiga = await _context.Nabavke
+                .Include(n => n.Dobavljac)
+                .Include(n => n.Knjiga)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (dobavljac == null)
+            if (nabavkaKnjiga == null)
             {
                 return NotFound();
             }
 
-            return View(dobavljac);
+            return View(nabavkaKnjiga);
         }
 
-        // POST: Dobavljac/Delete/5
+        // POST: NabavkaKnjiga/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var dobavljac = await _context.Dobavljaci.FindAsync(id);
-            if (dobavljac != null)
+            var nabavkaKnjiga = await _context.Nabavke.FindAsync(id);
+            if (nabavkaKnjiga != null)
             {
-                _context.Dobavljaci.Remove(dobavljac);
+                _context.Nabavke.Remove(nabavkaKnjiga);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool DobavljacExists(int id)
+        private bool NabavkaKnjigaExists(int id)
         {
-            return _context.Dobavljaci.Any(e => e.Id == id);
+            return _context.Nabavke.Any(e => e.Id == id);
         }
     }
 }

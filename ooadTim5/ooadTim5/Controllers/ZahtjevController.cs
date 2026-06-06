@@ -10,11 +10,11 @@ using ooadTim5.Models;
 
 namespace ooadTim5.Controllers
 {
-    public class ZahtjevZaPosudbuController : Controller
+    public class ZahtjevController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public ZahtjevZaPosudbuController(ApplicationDbContext context)
+        public ZahtjevController(ApplicationDbContext context)
         {
             _context = context;
         }
