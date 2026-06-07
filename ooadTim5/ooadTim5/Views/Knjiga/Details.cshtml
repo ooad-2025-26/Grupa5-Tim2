@@ -95,10 +95,10 @@
                 {
                     if (Model.Status.ToString() == "dostupna")
                     {
-                        <a asp-controller="Posudba" asp-action="Create" asp-route-knjigaId="@Model.Id"
-                           style="background-color: #c8621a; color: white; border-radius: 25px;
-                                  padding: 12px 30px; font-weight: 700; font-size: 0.9rem;
-                                  text-decoration: none; text-transform: uppercase;">
+                        <a asp-controller="ZahtjevZaPosudbu" asp-action="Create" asp-route-knjigaId="@Model.Id"
+                               style="background-color: #c8621a; color: white; border-radius: 25px;
+                            padding: 12px 30px; font-weight: 700; font-size: 0.9rem;
+                            text-decoration: none; text-transform: uppercase;">
                             Posudi knjigu
                         </a>
                     }

@@ -1,169 +1,167 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ooadTim5.Data;
 using ooadTim5.Models;
+using ooadTim5.Models.Enums;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ooadTim5.Controllers
 {
     public class ZahtjevZaPosudbuController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public ZahtjevZaPosudbuController(ApplicationDbContext context)
+        public ZahtjevZaPosudbuController(
+            ApplicationDbContext context,
+            UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
-        // GET: ZahtjevZaPosudbu
-        [Authorize(Roles = "administrator, bibliotekar, clan")]
+        [Authorize(Roles = "administrator,bibliotekar,clan")]
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Zahtjevi.Include(z => z.Knjiga);
-            return View(await applicationDbContext.ToListAsync());
+            var data = await _context.Zahtjevi
+                .Include(z => z.Knjiga)
+                .ToListAsync();
+
+            // Dohvati emailove za sve korisnike
+            var korisnici = new Dictionary<string, string>();
+            foreach (var z in data)
+            {
+                if (z.KorisnikId != null && !korisnici.ContainsKey(z.KorisnikId))
+                {
+                    var user = await _userManager.FindByIdAsync(z.KorisnikId);
+                    korisnici[z.KorisnikId] = user?.Email ?? z.KorisnikId;
+                }
+            }
+
+            ViewBag.Korisnici = korisnici;
+            return View(data);
         }
 
-        // GET: ZahtjevZaPosudbu/Details/5
-        [Authorize(Roles = "administrator, bibliotekar, clan")]
+        // DETAILS
+        [Authorize(Roles = "administrator,bibliotekar,clan")]
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var zahtjevZaPosudbu = await _context.Zahtjevi
+            var zahtjev = await _context.Zahtjevi
                 .Include(z => z.Knjiga)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (zahtjevZaPosudbu == null)
-            {
-                return NotFound();
-            }
+                .FirstOrDefaultAsync(z => z.Id == id);
 
-            return View(zahtjevZaPosudbu);
+            if (zahtjev == null) return NotFound();
+
+            return View(zahtjev);
         }
 
-        // GET: ZahtjevZaPosudbu/Create
-        [Authorize(Roles = "administrator, bibliotekar, clan")]
-        public IActionResult Create()
+        // CREATE GET
+        [Authorize(Roles = "administrator,bibliotekar,clan")]
+        public async Task<IActionResult> Create(int? knjigaId)
         {
-            ViewData["KnjigaId"] = new SelectList(_context.Knjige, "Id", "Autor");
-            return View();
+            if (knjigaId == null) return RedirectToAction("Index", "Knjiga");
+
+            var knjiga = await _context.Knjige.FindAsync(knjigaId);
+            if (knjiga == null) return NotFound();
+
+            ViewBag.NazivKnjige = knjiga.Naziv;
+            ViewData["KnjigaId"] = knjigaId;
+
+            var model = new ZahtjevZaPosudbu { KnjigaId = knjigaId.Value };
+            return View(model);
         }
 
-        // POST: ZahtjevZaPosudbu/Create
-        [Authorize(Roles = "administrator, bibliotekar, clan")]
+        // CREATE POST
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,KorisnikId,KnjigaId,DatumZahtjeva,Status,RazlogOdbijanja")] ZahtjevZaPosudbu zahtjevZaPosudbu)
+        [Authorize(Roles = "administrator,bibliotekar,clan")]
+        public async Task<IActionResult> Create(ZahtjevZaPosudbu zahtjevZaPosudbu)
         {
             if (ModelState.IsValid)
             {
+                zahtjevZaPosudbu.KorisnikId = _userManager.GetUserId(User);
+                zahtjevZaPosudbu.DatumZahtjeva = DateTime.Now;
+                zahtjevZaPosudbu.Status = StatusZahtjeva.Na_cekanju;
+                zahtjevZaPosudbu.RazlogOdbijanja = "";
+
                 _context.Add(zahtjevZaPosudbu);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            var knjiga = await _context.Knjige.FindAsync(zahtjevZaPosudbu.KnjigaId);
+            ViewBag.NazivKnjige = knjiga?.Naziv;
+            ViewData["KnjigaId"] = zahtjevZaPosudbu.KnjigaId;
+            return View(zahtjevZaPosudbu);
+        }
+
+        // EDIT
+        [Authorize(Roles = "administrator,bibliotekar")]
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var zahtjev = await _context.Zahtjevi.FindAsync(id);
+            if (zahtjev == null) return NotFound();
+
+            ViewData["KnjigaId"] = new SelectList(_context.Knjige, "Id", "Naziv", zahtjev.KnjigaId);
+            return View(zahtjev);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "administrator,bibliotekar")]
+        public async Task<IActionResult> Edit(int id, ZahtjevZaPosudbu zahtjevZaPosudbu)
+        {
+            if (id != zahtjevZaPosudbu.Id) return NotFound();
+
+            if (ModelState.IsValid)
+            {
+                _context.Update(zahtjevZaPosudbu);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["KnjigaId"] = new SelectList(_context.Knjige, "Id", "Autor", zahtjevZaPosudbu.KnjigaId);
+
             return View(zahtjevZaPosudbu);
         }
 
-        // GET: ZahtjevZaPosudbu/Edit/5
-        [Authorize(Roles = "administrator, bibliotekar")]
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var zahtjevZaPosudbu = await _context.Zahtjevi.FindAsync(id);
-            if (zahtjevZaPosudbu == null)
-            {
-                return NotFound();
-            }
-            ViewData["KnjigaId"] = new SelectList(_context.Knjige, "Id", "Autor", zahtjevZaPosudbu.KnjigaId);
-            return View(zahtjevZaPosudbu);
-        }
-
-        // POST: ZahtjevZaPosudbu/Edit/5
-        [Authorize(Roles = "administrator, bibliotekar")]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,KorisnikId,KnjigaId,DatumZahtjeva,Status,RazlogOdbijanja")] ZahtjevZaPosudbu zahtjevZaPosudbu)
-        {
-            if (id != zahtjevZaPosudbu.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(zahtjevZaPosudbu);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ZahtjevZaPosudbuExists(zahtjevZaPosudbu.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["KnjigaId"] = new SelectList(_context.Knjige, "Id", "Autor", zahtjevZaPosudbu.KnjigaId);
-            return View(zahtjevZaPosudbu);
-        }
-
-        // GET: ZahtjevZaPosudbu/Delete/5
+        // DELETE
         [Authorize(Roles = "administrator")]
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var zahtjevZaPosudbu = await _context.Zahtjevi
+            var zahtjev = await _context.Zahtjevi
                 .Include(z => z.Knjiga)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (zahtjevZaPosudbu == null)
-            {
-                return NotFound();
-            }
+                .FirstOrDefaultAsync(z => z.Id == id);
 
-            return View(zahtjevZaPosudbu);
+            if (zahtjev == null) return NotFound();
+
+            return View(zahtjev);
         }
 
-        // POST: ZahtjevZaPosudbu/Delete/5
-        [Authorize(Roles = "administrator")]
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "administrator")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var zahtjevZaPosudbu = await _context.Zahtjevi.FindAsync(id);
-            if (zahtjevZaPosudbu != null)
+            var zahtjev = await _context.Zahtjevi.FindAsync(id);
+
+            if (zahtjev != null)
             {
-                _context.Zahtjevi.Remove(zahtjevZaPosudbu);
+                _context.Zahtjevi.Remove(zahtjev);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool ZahtjevZaPosudbuExists(int id)
-        {
-            return _context.Zahtjevi.Any(e => e.Id == id);
         }
     }
 }

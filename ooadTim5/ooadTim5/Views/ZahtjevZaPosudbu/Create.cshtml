@@ -1,52 +1,48 @@
 ﻿@model ooadTim5.Models.ZahtjevZaPosudbu
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Novi zahtjev";
 }
 
-<h1>Create</h1>
+<div style="padding: 40px 60px;">
+    <h1 style="color:#1a4a3a; font-weight:800; margin-bottom:30px;">
+        Novi zahtjev za posudbu
+    </h1>
 
-<h4>ZahtjevZaPosudbu</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="KorisnikId" class="control-label"></label>
-                <input asp-for="KorisnikId" class="form-control" />
-                <span asp-validation-for="KorisnikId" class="text-danger"></span>
+    <div style="background:white; padding:30px; border-radius:12px;
+        box-shadow:0 2px 12px rgba(0,0,0,0.06); width:400px;">
+
+        <form asp-action="Create" method="post">
+
+            @* Knjiga je već odabrana, samo je prikazujemo *@
+            <input type="hidden" asp-for="KnjigaId" />
+
+            <div style="margin-bottom:20px;">
+                <label style="color:#999; font-size:0.8rem; font-weight:700; text-transform:uppercase;">
+                    Knjiga
+                </label>
+                <p style="font-weight:600; color:#1a4a3a; margin-top:5px;">
+                    @(ViewBag.NazivKnjige ?? "Odabrana knjiga")
+                </p>
             </div>
-            <div class="form-group">
-                <label asp-for="KnjigaId" class="control-label"></label>
-                <select asp-for="KnjigaId" class ="form-control" asp-items="ViewBag.KnjigaId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="DatumZahtjeva" class="control-label"></label>
-                <input asp-for="DatumZahtjeva" class="form-control" />
-                <span asp-validation-for="DatumZahtjeva" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                <select asp-for="Status" class="form-control"></select>
-                <span asp-validation-for="Status" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="RazlogOdbijanja" class="control-label"></label>
-                <input asp-for="RazlogOdbijanja" class="form-control" />
-                <span asp-validation-for="RazlogOdbijanja" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
+
+            <button type="submit"
+                    style="background:#c8621a; color:white; border:none;
+                padding:12px 30px; border-radius:25px; font-weight:700;
+                font-size:0.9rem; text-transform:uppercase; cursor:pointer;">
+                Pošalji zahtjev
+            </button>
+
+            <a asp-controller="Knjiga" asp-action="Index"
+                   style="display:inline-block; margin-left:10px; border: 2px solid #1a4a3a;
+                color:#1a4a3a; border-radius:25px; padding:12px 30px;
+                font-weight:700; font-size:0.9rem; text-decoration:none;
+                text-transform:uppercase;">
+                Odustani
+            </a>
+
         </form>
+
+
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

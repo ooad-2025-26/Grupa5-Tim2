@@ -29,7 +29,7 @@
                 {
                     <tr style="border-bottom: 1px solid #f0ebe4;">
                         <td style="padding: 15px 20px; color: #666;">
-                            @item.KorisnikId
+                            @(((Dictionary<string, string>)ViewBag.Korisnici).GetValueOrDefault(item.KorisnikId ?? "", item.KorisnikId ?? "-"))
                         </td>
 
                         <td style="padding: 15px 20px; font-weight: 600; color: #1a4a3a;">

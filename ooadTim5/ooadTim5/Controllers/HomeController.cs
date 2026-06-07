@@ -34,6 +34,11 @@ namespace ooadTim5.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+            if (result.IsNotAllowed)
+            {
+                ViewBag.Greska = "Morate potvrditi email adresu prije prijave. Provjerite inbox.";
+                return View();
+            }
             ViewBag.Greska = "Pogrešan email ili lozinka. Provjerite da li ste potvrdili email!";
             return View();
         }
