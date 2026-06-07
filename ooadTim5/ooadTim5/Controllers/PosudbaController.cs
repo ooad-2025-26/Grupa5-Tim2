@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,7 @@ namespace ooadTim5.Controllers
         }
 
         // GET: Posudba
+        [Authorize(Roles = "administrator, bibliotekar, clan")]
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Posudbe.Include(p => p.Knjiga);
@@ -27,6 +29,7 @@ namespace ooadTim5.Controllers
         }
 
         // GET: Posudba/Details/5
+        [Authorize(Roles = "administrator, bibliotekar, clan")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -46,6 +49,7 @@ namespace ooadTim5.Controllers
         }
 
         // GET: Posudba/Create
+        [Authorize(Roles = "administrator, bibliotekar")]
         public IActionResult Create()
         {
             ViewData["KnjigaId"] = new SelectList(_context.Knjige, "Id", "Autor");
@@ -53,8 +57,7 @@ namespace ooadTim5.Controllers
         }
 
         // POST: Posudba/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "administrator, bibliotekar")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,KnjigaId,ClanId,DatumPosudbe,OcekivaniDatumVracanja,DatumVracanja,Status,Napomena")] Posudba posudba)
@@ -70,6 +73,7 @@ namespace ooadTim5.Controllers
         }
 
         // GET: Posudba/Edit/5
+        [Authorize(Roles = "administrator, bibliotekar")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -87,8 +91,7 @@ namespace ooadTim5.Controllers
         }
 
         // POST: Posudba/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "administrator, bibliotekar")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,KnjigaId,ClanId,DatumPosudbe,OcekivaniDatumVracanja,DatumVracanja,Status,Napomena")] Posudba posudba)
@@ -123,6 +126,7 @@ namespace ooadTim5.Controllers
         }
 
         // GET: Posudba/Delete/5
+        [Authorize(Roles = "administrator")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -142,6 +146,7 @@ namespace ooadTim5.Controllers
         }
 
         // POST: Posudba/Delete/5
+        [Authorize(Roles = "administrator")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

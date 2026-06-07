@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using ooadTim5.Models;
 
 namespace ooadTim5.Controllers
 {
+    [Authorize(Roles = "administrator, bibliotekar")]
     public class NabavkaKnjigaController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -55,8 +57,6 @@ namespace ooadTim5.Controllers
         }
 
         // POST: NabavkaKnjiga/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,KnjigaId,DobavljacId,Kolicina,DatumNarudzbe,OcekivaniDatumIsporuke,Status")] NabavkaKnjiga nabavkaKnjiga)
@@ -91,8 +91,6 @@ namespace ooadTim5.Controllers
         }
 
         // POST: NabavkaKnjiga/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,KnjigaId,DobavljacId,Kolicina,DatumNarudzbe,OcekivaniDatumIsporuke,Status")] NabavkaKnjiga nabavkaKnjiga)
@@ -128,6 +126,7 @@ namespace ooadTim5.Controllers
         }
 
         // GET: NabavkaKnjiga/Delete/5
+        [Authorize(Roles = "administrator")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -148,6 +147,7 @@ namespace ooadTim5.Controllers
         }
 
         // POST: NabavkaKnjiga/Delete/5
+        [Authorize(Roles = "administrator")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -20,40 +21,36 @@ namespace ooadTim5.Controllers
         }
 
         // GET: ClanskaKartica
+        [Authorize(Roles = "administrator, bibliotekar, clan")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.ClanskeKartice.ToListAsync());
         }
 
         // GET: ClanskaKartica/Details/5
+        [Authorize(Roles = "administrator, bibliotekar, clan")]
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var clanskaKartica = await _context.ClanskeKartice
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (clanskaKartica == null)
-            {
-                return NotFound();
-            }
+            if (clanskaKartica == null) return NotFound();
 
             return View(clanskaKartica);
         }
 
         // GET: ClanskaKartica/Create
+        [Authorize(Roles = "administrator, bibliotekar")]
         public IActionResult Create()
         {
             return View();
         }
 
         // POST: ClanskaKartica/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "administrator, bibliotekar")]
         public async Task<IActionResult> Create([Bind("Id,BrojKartice,DatumIzdavanja,ClanstvoVaziDo,Aktivan,KorisnikId")] ClanskaKartica clanskaKartica)
         {
             if (ModelState.IsValid)
@@ -66,32 +63,24 @@ namespace ooadTim5.Controllers
         }
 
         // GET: ClanskaKartica/Edit/5
+        [Authorize(Roles = "administrator, bibliotekar")]
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var clanskaKartica = await _context.ClanskeKartice.FindAsync(id);
-            if (clanskaKartica == null)
-            {
-                return NotFound();
-            }
+            if (clanskaKartica == null) return NotFound();
+
             return View(clanskaKartica);
         }
 
         // POST: ClanskaKartica/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "administrator, bibliotekar")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,BrojKartice,DatumIzdavanja,ClanstvoVaziDo,Aktivan,KorisnikId")] ClanskaKartica clanskaKartica)
         {
-            if (id != clanskaKartica.Id)
-            {
-                return NotFound();
-            }
+            if (id != clanskaKartica.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
@@ -103,13 +92,9 @@ namespace ooadTim5.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!ClanskaKarticaExists(clanskaKartica.Id))
-                    {
                         return NotFound();
-                    }
                     else
-                    {
                         throw;
-                    }
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -117,19 +102,14 @@ namespace ooadTim5.Controllers
         }
 
         // GET: ClanskaKartica/Delete/5
+        [Authorize(Roles = "administrator")]
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var clanskaKartica = await _context.ClanskeKartice
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (clanskaKartica == null)
-            {
-                return NotFound();
-            }
+            if (clanskaKartica == null) return NotFound();
 
             return View(clanskaKartica);
         }
@@ -137,6 +117,7 @@ namespace ooadTim5.Controllers
         // POST: ClanskaKartica/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "administrator")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var clanskaKartica = await _context.ClanskeKartice.FindAsync(id);

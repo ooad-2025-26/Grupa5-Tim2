@@ -7,59 +7,47 @@
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    @if (User.IsInRole("administrator") || User.IsInRole("bibliotekar"))
+    {
+        <a asp-action="Create">Create New</a>
+    }
 </p>
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Knjiga)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Dobavljac)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Kolicina)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DatumNarudzbe)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.OcekivaniDatumIsporuke)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
+            <th>@Html.DisplayNameFor(model => model.Knjiga)</th>
+            <th>@Html.DisplayNameFor(model => model.Dobavljac)</th>
+            <th>@Html.DisplayNameFor(model => model.Kolicina)</th>
+            <th>@Html.DisplayNameFor(model => model.DatumNarudzbe)</th>
+            <th>@Html.DisplayNameFor(model => model.OcekivaniDatumIsporuke)</th>
+            <th>@Html.DisplayNameFor(model => model.Status)</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Knjiga.Autor)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Dobavljac.KontaktEmail)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Kolicina)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DatumNarudzbe)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.OcekivaniDatumIsporuke)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Knjiga.Autor)</td>
+                <td>@Html.DisplayFor(modelItem => item.Dobavljac.KontaktEmail)</td>
+                <td>@Html.DisplayFor(modelItem => item.Kolicina)</td>
+                <td>@Html.DisplayFor(modelItem => item.DatumNarudzbe)</td>
+                <td>@Html.DisplayFor(modelItem => item.OcekivaniDatumIsporuke)</td>
+                <td>@Html.DisplayFor(modelItem => item.Status)</td>
+                <td>
+                    @if (User.IsInRole("administrator") || User.IsInRole("bibliotekar"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                        <text> | </text>
+                    }
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    @if (User.IsInRole("administrator"))
+                    {
+                        <text> | </text>
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    }
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

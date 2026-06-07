@@ -81,6 +81,25 @@
                     color: white;
                 }
 
+            .btn-odjava {
+                border: 2px solid #c8621a;
+                color: #c8621a;
+                background: transparent;
+                border-radius: 25px;
+                padding: 6px 20px;
+                font-weight: 600;
+                font-size: 0.85rem;
+                letter-spacing: 0.05rem;
+                text-transform: uppercase;
+                text-decoration: none;
+                margin-right: 10px;
+            }
+
+                .btn-odjava:hover {
+                    background-color: #c8621a;
+                    color: white;
+                }
+
             .main-content {
                 min-height: calc(100vh - 140px);
             }
@@ -135,12 +154,24 @@
 
                 <!-- Desna strana -->
                 <div class="d-flex align-items-center">
-                    <a class="btn-prijava"
-                       asp-controller="Home"
-                       asp-action="Prijava">Prijava</a>
-                    <a class="btn-registracija"
-                       asp-controller="Home"
-                       asp-action="Registracija">Registracija</a>
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
+                    {
+                        <span style="color: #1a4a3a; font-weight: 600; font-size: 0.85rem; margin-right: 15px;">
+                            @User.Identity.Name
+                        </span>
+                        <a class="btn-odjava"
+                           asp-controller="Home"
+                           asp-action="Odjava">Odjava</a>
+                    }
+                    else
+                    {
+                        <a class="btn-prijava"
+                           asp-controller="Home"
+                           asp-action="Prijava">Prijava</a>
+                        <a class="btn-registracija"
+                           asp-controller="Home"
+                           asp-action="Registracija">Registracija</a>
+                    }
                 </div>
 
             </div>

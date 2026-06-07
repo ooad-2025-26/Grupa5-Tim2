@@ -1,83 +1,121 @@
 ﻿@model IEnumerable<ooadTim5.Models.Knjiga>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Knjige";
 }
 
-<h1>Index</h1>
+<div style="padding: 40px 60px;">
+    <h1 style="color: #1a4a3a; font-weight: 800; margin-bottom: 30px;">Lista knjiga:</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Naziv)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Autor)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ISBN)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Kategorija)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.GodinaIzdanja)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BrojStranica)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Izdavac)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Naslovnica)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Naziv)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Autor)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ISBN)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Kategorija)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.GodinaIzdanja)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BrojStranica)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Izdavac)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Naslovnica)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <!-- Search box -->
+    <div style="margin-bottom: 25px;">
+        <input type="text" id="searchInput" placeholder="Pretraži knjige..."
+               onkeyup="pretrazi()"
+               style="width: 350px; padding: 10px 16px; border: 1px solid #ddd;
+        border-radius: 8px; font-size: 1rem;" />
+    </div>
+
+    <!-- Dodaj dugme -->
+    @if (User.IsInRole("administrator") || User.IsInRole("bibliotekar"))
+    {
+        <div style="margin-bottom: 20px;">
+            <a asp-action="Create"
+               style="background-color: #c8621a; color: white; border-radius: 25px;
+                padding: 10px 25px; font-weight: 700; font-size: 0.85rem;
+                text-transform: uppercase; text-decoration: none;">
+                + Dodaj knjigu
+            </a>
+        </div>
+    }
+
+    <!-- Tabela -->
+    <div style="background: white; border-radius: 12px; overflow: hidden;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);">
+        <table class="table" style="margin: 0;">
+            <thead>
+                <tr style="background-color: #f0ebe4;">
+                    <th style="padding: 15px 20px; color: #1a4a3a; font-weight: 700;">ID</th>
+                    <th style="padding: 15px 20px; color: #1a4a3a; font-weight: 700;">Naziv knjige</th>
+                    <th style="padding: 15px 20px; color: #1a4a3a; font-weight: 700;">Autor</th>
+                    <th style="padding: 15px 20px; color: #1a4a3a; font-weight: 700;">Kategorija</th>
+                    <th style="padding: 15px 20px; color: #1a4a3a; font-weight: 700;">Status</th>
+                    <th style="padding: 15px 20px; color: #1a4a3a; font-weight: 700;">Akcija</th>
+                </tr>
+            </thead>
+            <tbody id="knjigaTabela">
+                @foreach (var item in Model)
+                {
+                    <tr style="border-bottom: 1px solid #f0ebe4;">
+                        <td style="padding: 15px 20px; color: #666;">@item.Id</td>
+                        <td style="padding: 15px 20px; font-weight: 600; color: #1a4a3a;">@item.Naziv</td>
+                        <td style="padding: 15px 20px; color: #666;">@item.Autor</td>
+                        <td style="padding: 15px 20px; color: #666;">@item.Kategorija</td>
+                        <td style="padding: 15px 20px;">
+                            @if (item.Status.ToString() == "dostupna")
+                            {
+                                <span style="background: #e8f5e9; color: #2e7d32; padding: 4px 12px;
+                                    border-radius: 20px; font-size: 0.85rem; font-weight: 600;">
+                                    Dostupna
+                                </span>
+                            }
+                            else
+                            {
+                                <span style="background: #fce4e4; color: #c62828; padding: 4px 12px;
+                                    border-radius: 20px; font-size: 0.85rem; font-weight: 600;">
+                                    Nedostupna
+                                </span>
+                            }
+                        </td>
+                        <td style="padding: 15px 20px;">
+                            <a asp-action="Details" asp-route-id="@item.Id"
+                               style="background-color: #c8621a; color: white; border-radius: 20px;
+                                padding: 6px 16px; font-size: 0.8rem; font-weight: 700;
+                                text-decoration: none; text-transform: uppercase;">
+                                Detalji
+                            </a>
+                            @if (User.IsInRole("administrator") || User.IsInRole("bibliotekar"))
+                            {
+                                <a asp-action="Edit" asp-route-id="@item.Id"
+                                   style="background-color: #1a4a3a; color: white; border-radius: 20px;
+                                    padding: 6px 16px; font-size: 0.8rem; font-weight: 700;
+                                    text-decoration: none; text-transform: uppercase; margin-left: 5px;">
+                                    Uredi
+                                </a>
+                            }
+                            @if (User.IsInRole("administrator"))
+                            {
+                                <a asp-action="Delete" asp-route-id="@item.Id"
+                                   style="background-color: #c62828; color: white; border-radius: 20px;
+                                    padding: 6px 16px; font-size: 0.8rem; font-weight: 700;
+                                    text-decoration: none; text-transform: uppercase; margin-left: 5px;">
+                                    Obriši
+                                </a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function pretrazi() {
+        var input = document.getElementById("searchInput").value.toLowerCase();
+        var rows = document.getElementById("knjigaTabela").getElementsByTagName("tr");
+
+        for (var i = 0; i < rows.length; i++) {
+            var naziv = rows[i].getElementsByTagName("td")[1];
+            var autor = rows[i].getElementsByTagName("td")[2];
+            if (naziv || autor) {
+                var nazivTekst = naziv ? naziv.textContent.toLowerCase() : "";
+                var autorTekst = autor ? autor.textContent.toLowerCase() : "";
+                if (nazivTekst.includes(input) || autorTekst.includes(input)) {
+                    rows[i].style.display = "";
+                } else {
+                    rows[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -19,39 +20,31 @@ namespace ooadTim5.Controllers
             _context = context;
         }
 
-        // GET: Knjiga
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Knjige.ToListAsync());
         }
 
-        // GET: Knjiga/Details/5
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var knjiga = await _context.Knjige
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (knjiga == null)
-            {
-                return NotFound();
-            }
+            if (knjiga == null) return NotFound();
 
             return View(knjiga);
         }
 
-        // GET: Knjiga/Create
+        [Authorize(Roles = "administrator, bibliotekar")]
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Knjiga/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "administrator, bibliotekar")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Naziv,Autor,ISBN,Kategorija,GodinaIzdanja,BrojStranica,Izdavac,Naslovnica,Status")] Knjiga knjiga)
@@ -65,33 +58,23 @@ namespace ooadTim5.Controllers
             return View(knjiga);
         }
 
-        // GET: Knjiga/Edit/5
+        [Authorize(Roles = "administrator, bibliotekar")]
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var knjiga = await _context.Knjige.FindAsync(id);
-            if (knjiga == null)
-            {
-                return NotFound();
-            }
+            if (knjiga == null) return NotFound();
+
             return View(knjiga);
         }
 
-        // POST: Knjiga/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "administrator, bibliotekar")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Naziv,Autor,ISBN,Kategorija,GodinaIzdanja,BrojStranica,Izdavac,Naslovnica,Status")] Knjiga knjiga)
         {
-            if (id != knjiga.Id)
-            {
-                return NotFound();
-            }
+            if (id != knjiga.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
@@ -102,39 +85,27 @@ namespace ooadTim5.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!KnjigaExists(knjiga.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    if (!KnjigaExists(knjiga.Id)) return NotFound();
+                    else throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
             return View(knjiga);
         }
 
-        // GET: Knjiga/Delete/5
+        [Authorize(Roles = "administrator")]
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var knjiga = await _context.Knjige
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (knjiga == null)
-            {
-                return NotFound();
-            }
+            if (knjiga == null) return NotFound();
 
             return View(knjiga);
         }
 
-        // POST: Knjiga/Delete/5
+        [Authorize(Roles = "administrator")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -144,7 +115,6 @@ namespace ooadTim5.Controllers
             {
                 _context.Knjige.Remove(knjiga);
             }
-
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
