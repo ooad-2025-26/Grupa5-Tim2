@@ -1,0 +1,97 @@
+﻿@model IEnumerable<ooadTim5.Models.KorisnikViewModel>
+
+@{
+    ViewData["Title"] = "Korisnici";
+}
+
+<div style="padding: 40px 60px;">
+    <h1 style="color: #1a4a3a; font-weight: 800; margin-bottom: 30px;">
+        Lista korisnika:
+    </h1>
+
+    @if (User.IsInRole("administrator"))
+    {
+        <div style="margin-bottom: 20px;">
+            <a asp-action="Create"
+                   style="background-color: #c8621a; color: white; border-radius: 25px;
+                padding: 10px 25px; font-weight: 700; font-size: 0.85rem;
+                text-transform: uppercase; text-decoration: none;">
+                + Dodaj korisnika
+            </a>
+        </div>
+    }
+
+    <div style="background: white; border-radius: 12px; overflow: hidden;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);">
+
+        <table class="table" style="margin: 0;">
+            <thead>
+                <tr style="background-color: #f0ebe4;">
+                    <th style="padding: 15px 20px; color: #1a4a3a; font-weight: 700;">Email</th>
+                    <th style="padding: 15px 20px; color: #1a4a3a; font-weight: 700;">Username</th>
+                    <th style="padding: 15px 20px; color: #1a4a3a; font-weight: 700;">Rola</th>
+                    <th style="padding: 15px 20px; color: #1a4a3a; font-weight: 700;">Akcija</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var korisnik in Model)
+                {
+                    <tr style="border-bottom: 1px solid #f0ebe4;">
+                        <td style="padding: 15px 20px; color: #666;">
+                            @korisnik.Email
+                        </td>
+
+                        <td style="padding: 15px 20px; font-weight: 600; color: #1a4a3a;">
+                            @korisnik.UserName
+                        </td>
+
+                        <td style="padding: 15px 20px;">
+                            @switch (korisnik.Rola)
+                            {
+                                case "administrator":
+                                    <span style="background:black; color:white; padding:4px 10px; border-radius:20px;">
+                                        ADMINISTRATOR
+                                    </span>
+                                    break;
+
+                                case "bibliotekar":
+                                    <span style="background:#1a4a3a; color:white; padding:4px 10px; border-radius:20px;">
+                                        BIBLIOTEKAR
+                                    </span>
+                                    break;
+
+                                case "clan":
+                                    <span style="background:#2e7d32; color:white; padding:4px 10px; border-radius:20px;">
+                                        ČLAN
+                                    </span>
+                                    break;
+                            }
+                        </td>
+
+                        <td style="padding: 15px 20px;">
+                            @if (User.IsInRole("administrator"))
+                            {
+                                <a asp-action="Edit"
+                                       asp-route-id="@korisnik.Id"
+                                       style="background-color: #1a4a3a; color: white; border-radius: 20px;
+                                    padding: 6px 16px; font-size: 0.8rem; font-weight: 700;
+                                    text-decoration: none; text-transform: uppercase;">
+                                    Uredi
+                                </a>
+
+                                <a asp-action="Delete"
+                                       asp-route-id="@korisnik.Id"
+                                       style="background-color: #c62828; color: white; border-radius: 20px;
+                                    padding: 6px 16px; font-size: 0.8rem; font-weight: 700;
+                                    text-decoration: none; text-transform: uppercase; margin-left: 5px;">
+                                    Obriši
+                                </a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

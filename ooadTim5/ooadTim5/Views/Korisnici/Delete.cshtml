@@ -1,0 +1,29 @@
+﻿@model ooadTim5.Models.KorisnikViewModel
+
+@{
+    ViewData["Title"] = "Obriši korisnika";
+}
+
+<h2>Obriši korisnika</h2>
+
+<div class="alert alert-danger">
+    Da li si sigurna da želiš obrisati ovog korisnika?
+</div>
+
+<ul>
+    <li><b>Email:</b> @Model.Email</li>
+    <li><b>Korisničko ime:</b> @Model.UserName</li>
+    <li><b>Rola:</b> @Model.Rola</li>
+</ul>
+
+<form asp-action="DeleteConfirmed" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <button type="submit" class="btn btn-danger">
+        Da, obriši
+    </button>
+
+    <a asp-action="Index" class="btn btn-secondary">
+        Odustani
+    </a>
+</form>

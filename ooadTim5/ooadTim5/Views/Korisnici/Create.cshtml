@@ -1,0 +1,32 @@
+﻿@model ooadTim5.Models.DodajKorisnikaViewModel
+
+<h2>Dodaj korisnika</h2>
+
+<form asp-action="Create" method="post">
+
+    <div class="form-group">
+        <label>Email</label>
+        <input asp-for="Email" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Lozinka</label>
+        <input asp-for="Lozinka" class="form-control" type="password" />
+    </div>
+
+    <div class="form-group">
+        <label>Rola</label>
+        <select asp-for="Rola" class="form-control">
+            <option value="administrator">administrator</option>
+            <option value="bibliotekar">bibliotekar</option>
+            <option value="clan">clan</option>
+        </select>
+    </div>
+
+    <br />
+
+    <button type="submit" class="btn btn-primary">
+        Sačuvaj
+    </button>
+
+</form>

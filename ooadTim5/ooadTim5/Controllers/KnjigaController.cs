@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ooadTim5.Data;
 using ooadTim5.Models;
+using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace ooadTim5.Controllers
 {
@@ -47,14 +49,43 @@ namespace ooadTim5.Controllers
         [Authorize(Roles = "administrator, bibliotekar")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Naziv,Autor,ISBN,Kategorija,GodinaIzdanja,BrojStranica,Izdavac,Naslovnica,Status")] Knjiga knjiga)
+        public async Task<IActionResult> Create(Knjiga knjiga, IFormFile slikaFile)
         {
             if (ModelState.IsValid)
             {
+                if (slikaFile != null)
+                {
+                    string folderPath = Path.Combine(
+                        Directory.GetCurrentDirectory(),
+                        "wwwroot",
+                        "images",
+                        "knjige");
+
+                    if (!Directory.Exists(folderPath))
+                    {
+                        Directory.CreateDirectory(folderPath);
+                    }
+
+                    string fileName =
+                        Guid.NewGuid().ToString()
+                        + Path.GetExtension(slikaFile.FileName);
+
+                    string fullPath = Path.Combine(folderPath, fileName);
+
+                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        await slikaFile.CopyToAsync(stream);
+                    }
+
+                    knjiga.Naslovnica = "/images/knjige/" + fileName;
+                }
+
                 _context.Add(knjiga);
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
+
             return View(knjiga);
         }
 

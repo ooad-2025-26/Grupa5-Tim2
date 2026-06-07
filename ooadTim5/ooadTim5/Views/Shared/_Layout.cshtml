@@ -140,16 +140,50 @@
 
                 <!-- Lijeva strana -->
                 <ul class="navbar-nav me-auto">
+
                     <li class="nav-item">
                         <a class="nav-link-lithub"
-                           asp-controller="Home"
-                           asp-action="Index">Početna</a>
+                               asp-controller="Home"
+                               asp-action="Index">
+                            Početna
+                        </a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link-lithub"
-                           asp-controller="Home"
-                           asp-action="ONama">O nama</a>
+                               asp-controller="Home"
+                               asp-action="ONama">
+                            O nama
+                        </a>
                     </li>
+
+                    @if (User.IsInRole("administrator"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link-lithub"
+                                   asp-controller="ZahtjevZaPosudbu"
+                                   asp-action="Index">
+                                Zahtjevi
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link-lithub"
+                                   asp-controller="Knjiga"
+                                   asp-action="Index">
+                                Knjige
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link-lithub"
+                                   asp-controller="Korisnici"
+                                   asp-action="Index">
+                                Korisnici
+                            </a>
+                        </li>
+                    }
+
                 </ul>
 
                 <!-- Desna strana -->

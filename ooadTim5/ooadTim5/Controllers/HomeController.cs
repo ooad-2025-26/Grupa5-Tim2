@@ -61,6 +61,7 @@ namespace ooadTim5.Controllers
 
             if (result.Succeeded)
             {
+                await _userManager.AddToRoleAsync(user, "clan");
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 var link = Url.Action("PotvrdiEmail", "Home",
                     new { userId = user.Id, token = token }, Request.Scheme);
