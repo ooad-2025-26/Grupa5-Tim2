@@ -25,7 +25,7 @@ namespace ooadTim5.Data
 
             if (admin == null)
             {
-                admin = new ApplicationUser
+                admin = new IdentityUser
                 {
                     UserName = "admin@library.com",
                     Email = "admin@library.com",
@@ -41,7 +41,7 @@ namespace ooadTim5.Data
 
             if (bib == null)
             {
-                bib = new ApplicationUser
+                bib = new IdentityUser
                 {
                     UserName = "bib@library.com",
                     Email = "bib@library.com",

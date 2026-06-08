@@ -40,13 +40,13 @@ namespace ooadTim5.Controllers
             return View(knjiga);
         }
 
-        [Authorize(Roles = "administrator, bibliotekar")]
+        [Authorize(Roles = "administrator")]
         public IActionResult Create()
         {
             return View();
         }
 
-        [Authorize(Roles = "administrator, bibliotekar")]
+        [Authorize(Roles = "administrator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Knjiga knjiga, IFormFile slikaFile)

@@ -1,74 +1,119 @@
 ﻿@model ooadTim5.Models.Knjiga
 
-@{
-    ViewData["Title"] = "Edit";
-}
+<div style="display:flex; justify-content:center; padding:40px;">
 
-<h1>Edit</h1>
+    <div style="
+        width:550px;
+        background:white;
+        border-radius:16px;
+        box-shadow:0 6px 20px rgba(0,0,0,0.12);
+        padding:30px;
+        ">
 
-<h4>Knjiga</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <h2 style="
+            text-align:center;
+            color:#1a4a3a;
+            font-weight:800;
+            margin-bottom:25px;">
+            Uredi knjigu
+        </h2>
+
+        <form asp-action="Edit" method="post">
+
             <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Naziv" class="control-label"></label>
-                <input asp-for="Naziv" class="form-control" />
+
+            <!-- NAZIV -->
+            <div style="margin-bottom:12px;">
+                <label style="font-weight:600;">Naziv</label>
+                <input asp-for="Naziv"
+                       class="form-control"
+                       style="border-radius:10px; padding:10px;" />
                 <span asp-validation-for="Naziv" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Autor" class="control-label"></label>
-                <input asp-for="Autor" class="form-control" />
+
+            <!-- AUTOR -->
+            <div style="margin-bottom:12px;">
+                <label style="font-weight:600;">Autor</label>
+                <input asp-for="Autor"
+                       class="form-control"
+                       style="border-radius:10px; padding:10px;" />
                 <span asp-validation-for="Autor" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="ISBN" class="control-label"></label>
-                <input asp-for="ISBN" class="form-control" />
+
+            <!-- ISBN -->
+            <div style="margin-bottom:12px;">
+                <label style="font-weight:600;">ISBN</label>
+                <input asp-for="ISBN"
+                       class="form-control"
+                       style="border-radius:10px; padding:10px;" />
                 <span asp-validation-for="ISBN" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Kategorija" class="control-label"></label>
-                <input asp-for="Kategorija" class="form-control" />
-                <span asp-validation-for="Kategorija" class="text-danger"></span>
+
+            <!-- KATEGORIJA -->
+            <div style="margin-bottom:12px;">
+                <label style="font-weight:600;">Kategorija</label>
+                <input asp-for="Kategorija"
+                       class="form-control"
+                       style="border-radius:10px; padding:10px;" />
             </div>
-            <div class="form-group">
-                <label asp-for="GodinaIzdanja" class="control-label"></label>
-                <input asp-for="GodinaIzdanja" class="form-control" />
-                <span asp-validation-for="GodinaIzdanja" class="text-danger"></span>
+
+            <!-- GODINA -->
+            <div style="margin-bottom:12px;">
+                <label style="font-weight:600;">Godina izdanja</label>
+                <input asp-for="GodinaIzdanja"
+                       type="number"
+                       class="form-control"
+                       style="border-radius:10px; padding:10px;" />
             </div>
-            <div class="form-group">
-                <label asp-for="BrojStranica" class="control-label"></label>
-                <input asp-for="BrojStranica" class="form-control" />
-                <span asp-validation-for="BrojStranica" class="text-danger"></span>
+
+            <!-- STRANICE -->
+            <div style="margin-bottom:12px;">
+                <label style="font-weight:600;">Broj stranica</label>
+                <input asp-for="BrojStranica"
+                       type="number"
+                       class="form-control"
+                       style="border-radius:10px; padding:10px;" />
             </div>
-            <div class="form-group">
-                <label asp-for="Izdavac" class="control-label"></label>
-                <input asp-for="Izdavac" class="form-control" />
-                <span asp-validation-for="Izdavac" class="text-danger"></span>
+
+            <!-- IZDAVAČ -->
+            <div style="margin-bottom:12px;">
+                <label style="font-weight:600;">Izdavač</label>
+                <input asp-for="Izdavac"
+                       class="form-control"
+                       style="border-radius:10px; padding:10px;" />
             </div>
-            <div class="form-group">
-                <label asp-for="Naslovnica" class="control-label"></label>
-                <input asp-for="Naslovnica" class="form-control" />
-                <span asp-validation-for="Naslovnica" class="text-danger"></span>
+
+            <!-- NASLOVNICA -->
+            <div style="margin-bottom:20px;">
+                <label style="font-weight:600;">Naslovnica</label>
+                <input asp-for="Naslovnica"
+                       class="form-control"
+                       style="border-radius:10px; padding:10px;" />
             </div>
-            <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                <select asp-for="Status" class="form-control"></select>
-                <span asp-validation-for="Status" class="text-danger"></span>
+
+            <!-- STATUS -->
+            <div style="margin-bottom:20px;">
+                <label style="font-weight:600;">Status</label>
+                <select asp-for="Status"
+                         class="form-control"
+                         asp-items="Html.GetEnumSelectList<ooadTim5.Models.Enums.StatusKnjige>()"
+                         style="border-radius:10px; padding:10px;">
+                </select>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
+
+            <!-- BUTTON -->
+            <button type="submit"
+                    style="
+                width:100%;
+                background:#1a4a3a;
+                color:white;
+                border:none;
+                padding:12px;
+                border-radius:12px;
+                font-weight:700;">
+                Sačuvaj izmjene
+            </button>
+
         </form>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

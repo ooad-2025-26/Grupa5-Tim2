@@ -8,6 +8,7 @@ using ooadTim5.Models;
 using ooadTim5.Models.Enums;
 using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace ooadTim5.Controllers
@@ -28,23 +29,33 @@ namespace ooadTim5.Controllers
         [Authorize(Roles = "administrator,bibliotekar,clan")]
         public async Task<IActionResult> Index()
         {
-            var data = await _context.Zahtjevi
-                .Include(z => z.Knjiga)
-                .ToListAsync();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            // Dohvati emailove za sve korisnike
-            var korisnici = new Dictionary<string, string>();
-            foreach (var z in data)
+            IQueryable<ZahtjevZaPosudbu> query = _context.Zahtjevi
+                .Include(z => z.Knjiga);
+
+            if (User.IsInRole("administrator") || User.IsInRole("bibliotekar"))
             {
-                if (z.KorisnikId != null && !korisnici.ContainsKey(z.KorisnikId))
-                {
-                    var user = await _userManager.FindByIdAsync(z.KorisnikId);
-                    korisnici[z.KorisnikId] = user?.Email ?? z.KorisnikId;
-                }
+                var svi = await query.ToListAsync();
+
+                var korisnici = await _context.Users
+                    .ToDictionaryAsync(x => x.Id, x => x.UserName ?? x.Email);
+
+                ViewBag.Korisnici = korisnici;
+
+                return View(svi);
             }
 
-            ViewBag.Korisnici = korisnici;
-            return View(data);
+            var moji = await query
+                .Where(z => z.KorisnikId == userId)
+                .ToListAsync();
+
+            var korisniciUser = await _context.Users
+                .ToDictionaryAsync(x => x.Id, x => x.UserName ?? x.Email);
+
+            ViewBag.Korisnici = korisniciUser;
+
+            return View(moji);
         }
 
         // DETAILS
@@ -58,6 +69,9 @@ namespace ooadTim5.Controllers
                 .FirstOrDefaultAsync(z => z.Id == id);
 
             if (zahtjev == null) return NotFound();
+
+            var user = await _userManager.FindByIdAsync(zahtjev.KorisnikId ?? "");
+            ViewBag.KorisnikEmail = user?.Email ?? zahtjev.KorisnikId;
 
             return View(zahtjev);
         }
@@ -131,6 +145,36 @@ namespace ooadTim5.Controllers
             }
 
             return View(zahtjevZaPosudbu);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "administrator,bibliotekar")]
+        public async Task<IActionResult> Odobri(int id)
+        {
+            var zahtjev = await _context.Zahtjevi.FindAsync(id);
+            if (zahtjev == null) return NotFound();
+
+            zahtjev.Status = StatusZahtjeva.odobren;
+            zahtjev.RazlogOdbijanja = "";
+            _context.Update(zahtjev);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "administrator,bibliotekar")]
+        public async Task<IActionResult> Odbij(int id, string razlog)
+        {
+            var zahtjev = await _context.Zahtjevi.FindAsync(id);
+            if (zahtjev == null) return NotFound();
+
+            zahtjev.Status = StatusZahtjeva.odbijen;
+            zahtjev.RazlogOdbijanja = razlog ?? "";
+            _context.Update(zahtjev);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
 
         // DELETE

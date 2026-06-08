@@ -1,48 +1,132 @@
 ﻿@model ooadTim5.Models.ZahtjevZaPosudbu
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalji zahtjeva";
 }
 
-<h1>Details</h1>
+<div style="padding: 40px 60px;">
 
-<div>
-    <h4>ZahtjevZaPosudbu</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.KorisnikId)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.KorisnikId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Knjiga)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Knjiga.Autor)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DatumZahtjeva)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DatumZahtjeva)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Status)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Status)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.RazlogOdbijanja)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.RazlogOdbijanja)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <div style="background: white; border-radius: 16px; overflow: hidden;
+        box-shadow: 0 2px 16px rgba(0,0,0,0.08);">
+
+        <!-- Header tabela -->
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background: #e8e4f0;">
+                    <th style="padding: 16px 24px; font-weight: 700; color: #1a1a2e; width: 50%;">Korisnik</th>
+                    <th style="padding: 16px 24px; font-weight: 700; color: #1a1a2e; width: 50%; border-left: 1px solid #d0cce0;">Knjiga</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="vertical-align: top;">
+                    <!-- Korisnik kolona -->
+                    <td style="padding: 24px; border-bottom: 1px solid #eee;">
+                        <p style="margin: 0 0 8px 0; font-size: 0.95rem;">
+                            <strong>Ime:</strong> @ViewBag.KorisnikEmail
+                        </p>
+                        <p style="margin: 0; font-size: 0.95rem;">
+                            <strong>Datum zahtjeva:</strong> @Model.DatumZahtjeva.ToString("dd.MM.yyyy")
+                        </p>
+                    </td>
+
+                    <!-- Knjiga kolona -->
+                    <td style="padding: 24px; border-left: 1px solid #eee; border-bottom: 1px solid #eee;">
+                        <p style="margin: 0 0 8px 0; font-size: 0.95rem;">
+                            <strong>Naslov:</strong> @Model.Knjiga?.Naziv
+                        </p>
+                        <p style="margin: 0 0 8px 0; font-size: 0.95rem;">
+                            <strong>Autor:</strong> @Model.Knjiga?.Autor
+                        </p>
+                        <p style="margin: 0; font-size: 0.95rem;">
+                            <strong>Dostupnost:</strong>
+                            @if (Model.Knjiga?.Status.ToString() == "dostupna")
+                            {
+                                <span style="color: #2e7d32; font-weight: 700;">Dostupna</span>
+                            }
+                            else
+                            {
+                                <span style="color: #c62828; font-weight: 700;">Nije dostupna</span>
+                            }
+                        </p>
+                    </td>
+                </tr>
+
+                <!-- Status row -->
+                <tr>
+                    <td colspan="2" style="padding: 16px 24px; border-bottom: 1px solid #eee;">
+                        <strong>Status zahtjeva:</strong>
+                        @if (Model.Status.ToString() == "Na_cekanju")
+                        {
+                            <span style="background: #fff3e0; color: #e65100; padding: 4px 14px;
+                                border-radius: 20px; font-size: 0.85rem; font-weight: 700; margin-left: 8px;">
+                                Na čekanju
+                            </span>
+                        }
+                        else if (Model.Status.ToString() == "Odobren")
+                        {
+                            <span style="background: #e8f5e9; color: #2e7d32; padding: 4px 14px;
+                                border-radius: 20px; font-size: 0.85rem; font-weight: 700; margin-left: 8px;">
+                                Odobren
+                            </span>
+                        }
+                        else
+                        {
+                            <span style="background: #fce4e4; color: #c62828; padding: 4px 14px;
+                                border-radius: 20px; font-size: 0.85rem; font-weight: 700; margin-left: 8px;">
+                                Odbijen
+                            </span>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Model.RazlogOdbijanja))
+                        {
+                            <span style="margin-left: 16px; color: #666; font-size: 0.9rem;">
+                                Razlog: @Model.RazlogOdbijanja
+                            </span>
+                        }
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Akcije za bibliotekara/admina -->
+        @if ((User.IsInRole("administrator") || User.IsInRole("bibliotekar")) && Model.Status.ToString() == "Na_cekanju")
+        {
+            <div style="padding: 20px 24px; display: flex; align-items: center; gap: 16px; background: #fafafa;">
+
+                <form asp-action="Odobri" asp-route-id="@Model.Id" method="post" style="margin:0;">
+                    @Html.AntiForgeryToken()
+                    <button type="submit"
+                            style="background: #2e7d32; color: white; border: none; border-radius: 25px;
+                        padding: 10px 28px; font-weight: 700; font-size: 0.88rem;
+                        text-transform: uppercase; cursor: pointer;">
+                        Odobri zahtjev
+                    </button>
+                </form>
+
+                <form asp-action="Odbij" asp-route-id="@Model.Id" method="post"
+                      style="margin:0; display: flex; align-items: center; gap: 10px;">
+                    @Html.AntiForgeryToken()
+                    <input type="text" name="razlog" placeholder="Razlog odbijanja..."
+                           style="border: 1px solid #ddd; border-radius: 25px; padding: 10px 18px;
+                    font-size: 0.88rem; width: 260px; outline: none;" />
+                    <button type="submit"
+                            style="background: #c62828; color: white; border: none; border-radius: 25px;
+                        padding: 10px 28px; font-weight: 700; font-size: 0.88rem;
+                        text-transform: uppercase; cursor: pointer;">
+                        Odbij zahtjev
+                    </button>
+                </form>
+
+            </div>
+        }
+
+        <!-- Nazad dugme -->
+        <div style="padding: 16px 24px; border-top: 1px solid #eee;">
+            <a asp-action="Index"
+                   style="color: #1a4a3a; font-weight: 600; text-decoration: none; font-size: 0.9rem;">
+                ← Nazad na listu
+            </a>
+        </div>
+
+    </div>
 </div>

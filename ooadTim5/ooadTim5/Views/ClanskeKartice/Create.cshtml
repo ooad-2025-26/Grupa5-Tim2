@@ -1,9 +1,9 @@
-﻿@model ooadTim5.Models.IzmijeniKorisnikaViewModel
+﻿@model ooadTim5.Models.ClanskaKartica
 
 <div style="display:flex; justify-content:center; padding:40px;">
 
     <div style="
-        width:500px;
+        width:450px;
         background:white;
         border-radius:16px;
         box-shadow:0 6px 20px rgba(0,0,0,0.12);
@@ -15,60 +15,49 @@
             color:#1a4a3a;
             font-weight:800;
             margin-bottom:25px;">
-            Uredi korisnika
+            Kreiranje članske kartice
         </h2>
 
-        <form asp-action="Edit" method="post">
+        <form asp-action="Create" method="post">
 
-            <input type="hidden" asp-for="Id" />
-
-            <!-- EMAIL -->
-            <div style="margin-bottom:15px;">
-                <label style="font-weight:600;">Email</label>
-                <input asp-for="Email"
-                       class="form-control"
-                       style="border-radius:10px; padding:10px;" />
-            </div>
-
-            <!-- ROLA -->
-            <div style="margin-bottom:15px;">
-                <label style="font-weight:600;">Rola</label>
-                <input asp-for="Rola"
-                       class="form-control"
-                       style="border-radius:10px; padding:10px;" />
-            </div>
-
-            <hr style="margin:25px 0;" />
-
-            <h4 style="color:#1a4a3a; font-weight:700;">
-                Članska kartica
-            </h4>
+            <input type="hidden" asp-for="KorisnikId" />
 
             <!-- BROJ KARTICE -->
-            <div style="margin-bottom:10px;">
-                <label>Broj kartice</label>
-                <input name="BrojKartice"
+            <div style="margin-bottom:15px;">
+                <label style="font-weight:600; color:#333;">Broj kartice</label>
+                <input asp-for="BrojKartice"
                        class="form-control"
+                       style="border-radius:10px; padding:10px;" />
+                <span asp-validation-for="BrojKartice" style="color:red;"></span>
+            </div>
+
+            <!-- DATUM IZDAVANJA -->
+            <div style="margin-bottom:15px;">
+                <label style="font-weight:600; color:#333;">Datum izdavanja</label>
+                <input asp-for="DatumIzdavanja"
+                       class="form-control"
+                       type="date"
                        style="border-radius:10px; padding:10px;" />
             </div>
 
             <!-- VRIJEDI DO -->
-            <div style="margin-bottom:10px;">
-                <label>Vrijedi do</label>
-                <input name="ClanstvoVaziDo"
-                       type="date"
+            <div style="margin-bottom:15px;">
+                <label style="font-weight:600; color:#333;">Članstvo važi do</label>
+                <input asp-for="ClanstvoVaziDo"
                        class="form-control"
+                       type="date"
                        style="border-radius:10px; padding:10px;" />
             </div>
 
             <!-- AKTIVAN -->
             <div style="margin-bottom:20px;">
-                <label>
-                    <input name="Aktivan" type="checkbox" />
+                <label style="font-weight:600; color:#333;">
+                    <input asp-for="Aktivan" />
                     Aktivna kartica
                 </label>
             </div>
 
+            <!-- BUTTON -->
             <button type="submit"
                     style="
                 width:100%;
@@ -77,8 +66,9 @@
                 border:none;
                 padding:12px;
                 border-radius:12px;
-                font-weight:700;">
-                Sačuvaj
+                font-weight:700;
+                transition:0.2s;">
+                Sačuvaj karticu
             </button>
 
         </form>

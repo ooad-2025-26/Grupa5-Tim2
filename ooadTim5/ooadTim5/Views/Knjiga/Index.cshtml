@@ -16,7 +16,7 @@
     </div>
 
     <!-- Dodaj dugme -->
-    @if (User.IsInRole("administrator") || User.IsInRole("bibliotekar"))
+    @if (User.IsInRole("administrator"))
     {
         <div style="margin-bottom: 20px;">
             <a asp-action="Create"

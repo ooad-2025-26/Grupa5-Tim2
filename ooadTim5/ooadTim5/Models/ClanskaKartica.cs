@@ -32,6 +32,6 @@ namespace ooadTim5.Models
         public bool Aktivan { get; set; }
 
         [DisplayName("ID korisnika:")]
-        public string? KorisnikId { get; set; }
+        public string KorisnikId { get; set; }
     }
 }

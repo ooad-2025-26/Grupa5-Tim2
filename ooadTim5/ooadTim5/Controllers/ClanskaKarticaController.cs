@@ -1,138 +1,73 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ooadTim5.Data;
 using ooadTim5.Models;
 
 namespace ooadTim5.Controllers
 {
-    public class ClanskaKarticaController : Controller
+    [Authorize(Roles = "administrator,bibliotekar")]
+    public class ClanskeKarticeController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public ClanskaKarticaController(ApplicationDbContext context)
+        public ClanskeKarticeController(ApplicationDbContext context,
+                                         UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
-        // GET: ClanskaKartica
-        [Authorize(Roles = "administrator, bibliotekar, clan")]
-        public async Task<IActionResult> Index()
+        // 1. LISTA KORISNIKA BEZ KARTICE
+        public async Task<IActionResult> NoviClanovi()
         {
-            return View(await _context.ClanskeKartice.ToListAsync());
+            var korisnici = await _userManager.Users.ToListAsync();
+
+            var bezKartice = new List<IdentityUser>();
+
+            foreach (var user in korisnici)
+            {
+                var postoji = await _context.ClanskeKartice
+                    .AnyAsync(x => x.KorisnikId == user.Id);
+
+                if (!postoji)
+                    bezKartice.Add(user);
+            }
+
+            return View(bezKartice);
         }
 
-        // GET: ClanskaKartica/Details/5
-        [Authorize(Roles = "administrator, bibliotekar, clan")]
-        public async Task<IActionResult> Details(int? id)
+        // GET
+        public IActionResult Create(string korisnikId)
         {
-            if (id == null) return NotFound();
+            var model = new ClanskaKartica
+            {
+                KorisnikId = korisnikId,
+                DatumIzdavanja = DateTime.Now,
+                ClanstvoVaziDo = DateTime.Now.AddYears(1),
+                Aktivan = true
+            };
 
-            var clanskaKartica = await _context.ClanskeKartice
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (clanskaKartica == null) return NotFound();
-
-            return View(clanskaKartica);
+            return View(model);
         }
 
-        // GET: ClanskaKartica/Create
-        [Authorize(Roles = "administrator, bibliotekar")]
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: ClanskaKartica/Create
+        // POST
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "administrator, bibliotekar")]
-        public async Task<IActionResult> Create([Bind("Id,BrojKartice,DatumIzdavanja,ClanstvoVaziDo,Aktivan,KorisnikId")] ClanskaKartica clanskaKartica)
+        public async Task<IActionResult> Create(ClanskaKartica model)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(clanskaKartica);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(clanskaKartica);
-        }
+            model.Aktivan = true;
+            model.DatumIzdavanja = DateTime.Now;
 
-        // GET: ClanskaKartica/Edit/5
-        [Authorize(Roles = "administrator, bibliotekar")]
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null) return NotFound();
+            if (model.ClanstvoVaziDo == default)
+                model.ClanstvoVaziDo = DateTime.Now.AddYears(1);
 
-            var clanskaKartica = await _context.ClanskeKartice.FindAsync(id);
-            if (clanskaKartica == null) return NotFound();
-
-            return View(clanskaKartica);
-        }
-
-        // POST: ClanskaKartica/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "administrator, bibliotekar")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,BrojKartice,DatumIzdavanja,ClanstvoVaziDo,Aktivan,KorisnikId")] ClanskaKartica clanskaKartica)
-        {
-            if (id != clanskaKartica.Id) return NotFound();
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(clanskaKartica);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ClanskaKarticaExists(clanskaKartica.Id))
-                        return NotFound();
-                    else
-                        throw;
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(clanskaKartica);
-        }
-
-        // GET: ClanskaKartica/Delete/5
-        [Authorize(Roles = "administrator")]
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null) return NotFound();
-
-            var clanskaKartica = await _context.ClanskeKartice
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (clanskaKartica == null) return NotFound();
-
-            return View(clanskaKartica);
-        }
-
-        // POST: ClanskaKartica/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "administrator")]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var clanskaKartica = await _context.ClanskeKartice.FindAsync(id);
-            if (clanskaKartica != null)
-            {
-                _context.ClanskeKartice.Remove(clanskaKartica);
-            }
-
+            _context.ClanskeKartice.Add(model);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
 
-        private bool ClanskaKarticaExists(int id)
-        {
-            return _context.ClanskeKartice.Any(e => e.Id == id);
+            return RedirectToAction("NoviClanovi");
         }
     }
 }

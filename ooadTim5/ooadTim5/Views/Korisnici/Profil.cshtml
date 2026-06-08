@@ -1,10 +1,11 @@
 ﻿@{
-    ViewData["Title"] = "Detalji korisnika";
+    ViewData["Title"] = "Moj profil";
     var kartica = ViewBag.Kartica as ooadTim5.Models.ClanskaKartica;
 }
 
 <div style="padding: 40px 60px; max-width: 800px;">
 
+    <!-- Header kartica -->
     <div style="background: #1a4a3a; border-radius: 16px 16px 0 0; padding: 30px 36px;
         display: flex; align-items: center; gap: 20px;">
         <div style="width: 60px; height: 60px; border-radius: 14px; background: #c8621a;
@@ -15,11 +16,12 @@
         <div>
             <h2 style="color: white; font-weight: 800; margin: 0;">@ViewBag.Email</h2>
             <p style="color: rgba(255,255,255,0.7); margin: 4px 0 0 0; font-size: 0.9rem;">
-                @ViewBag.Rola
+                Član biblioteke
             </p>
         </div>
     </div>
 
+    <!-- Info -->
     <div style="background: white; border-radius: 0 0 16px 16px;
         box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 36px;">
 
@@ -30,7 +32,9 @@
                     text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;">
                     Email adresa
                 </p>
-                <p style="font-weight: 600; font-size: 0.95rem;">@ViewBag.Email</p>
+                <p style="font-weight: 600; font-size: 0.95rem; color: #1a1a1a;">
+                    @ViewBag.Email
+                </p>
             </div>
 
             <div>
@@ -38,7 +42,7 @@
                     text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;">
                     Broj članske kartice
                 </p>
-                <p style="font-weight: 600; font-size: 0.95rem;">
+                <p style="font-weight: 600; font-size: 0.95rem; color: #1a1a1a;">
                     @(kartica?.BrojKartice ?? "Nema kartice")
                 </p>
             </div>
@@ -48,7 +52,7 @@
                     text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;">
                     Datum izdavanja kartice
                 </p>
-                <p style="font-weight: 600; font-size: 0.95rem;">
+                <p style="font-weight: 600; font-size: 0.95rem; color: #1a1a1a;">
                     @(kartica != null ? kartica.DatumIzdavanja.ToString("dd. MMMM yyyy.") : "-")
                 </p>
             </div>
@@ -58,34 +62,35 @@
                     text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;">
                     Članstvo važi do
                 </p>
-                <p style="font-weight: 600; font-size: 0.95rem;">
+                <p style="font-weight: 600; font-size: 0.95rem; color: #1a1a1a;">
                     @(kartica != null ? kartica.ClanstvoVaziDo.ToString("dd. MMMM yyyy.") : "-")
                 </p>
             </div>
 
         </div>
 
+        <!-- Status -->
         <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid #f0ebe4;
             display: flex; justify-content: space-between; align-items: center;">
             @if (kartica != null && kartica.Aktivan)
             {
-                <span style="color: #2e7d32; font-weight: 700; font-size: 0.88rem;">● AKTIVAN PROFIL</span>
+                <span style="color: #2e7d32; font-weight: 700; font-size: 0.88rem;">
+                    ● AKTIVAN PROFIL
+                </span>
             }
             else
             {
-                <span style="color: #c62828; font-weight: 700; font-size: 0.88rem;">● NEAKTIVAN PROFIL</span>
+                <span style="color: #c62828; font-weight: 700; font-size: 0.88rem;">
+                    ● NEAKTIVAN PROFIL
+                </span>
             }
+
             @if (kartica != null)
             {
-                <span style="color: #999; font-size: 0.85rem;">ID: @kartica.BrojKartice</span>
+                <span style="color: #999; font-size: 0.85rem;">
+                    ID: @kartica.BrojKartice
+                </span>
             }
-        </div>
-
-        <div style="margin-top: 24px;">
-            <a asp-action="Index"
-                   style="color: #1a4a3a; font-weight: 600; text-decoration: none; font-size: 0.9rem;">
-                ← Nazad na listu
-            </a>
         </div>
     </div>
 </div>

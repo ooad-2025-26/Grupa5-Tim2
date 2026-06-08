@@ -157,6 +157,25 @@
                         </a>
                     </li>
 
+
+                    @if (User.IsInRole("clan"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link-lithub"
+                                   asp-controller="ZahtjevZaPosudbu"
+                                   asp-action="Index">
+                                Zahtjevi
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link-lithub" asp-controller="Korisnici" asp-action="Profil">
+                                Profil
+                            </a>
+                        </li>
+
+                        
+                    }
+
                     @if (User.IsInRole("administrator"))
                     {
                         <li class="nav-item">
@@ -182,7 +201,43 @@
                                 Korisnici
                             </a>
                         </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link-lithub" asp-controller="ClanskeKartice" asp-action="NoviClanovi">
+                                Članske kartice
+                            </a>
+                        </li>
                     }
+
+
+                    @if (User.IsInRole("bibliotekar"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link-lithub"
+                                   asp-controller="ZahtjevZaPosudbu"
+                                   asp-action="Index">
+                                Zahtjevi
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link-lithub"
+                                   asp-controller="Knjiga"
+                                   asp-action="Index">
+                                Knjige
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link-lithub" asp-controller="ClanskeKartice" asp-action="NoviClanovi">
+                                Članske kartice
+                            </a>
+                        </li>
+                    }
+
+
+
+                        
 
                 </ul>
 
