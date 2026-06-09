@@ -117,7 +117,24 @@ namespace ooadTim5.Controllers
         {
             if (ModelState.IsValid)
             {
-                zahtjevZaPosudbu.KorisnikId = _userManager.GetUserId(User);
+                var userId = _userManager.GetUserId(User);
+
+                // Provjera članske kartice samo za clan ulogu
+                if (User.IsInRole("clan"))
+                {
+                    var kartica = await _context.ClanskeKartice
+                        .FirstOrDefaultAsync(k => k.KorisnikId == userId &&
+                                                  k.Aktivan &&
+                                                  k.ClanstvoVaziDo >= DateTime.Today);
+
+                    if (kartica == null)
+                    {
+                        TempData["Greska"] = "Nemate aktivnu člansku karticu. Molimo posjetite biblioteku da dobijete karticu.";
+                        return RedirectToAction("Index", "Knjiga");
+                    }
+                }
+
+                zahtjevZaPosudbu.KorisnikId = userId;
                 zahtjevZaPosudbu.DatumZahtjeva = DateTime.Now;
                 zahtjevZaPosudbu.Status = StatusZahtjeva.Na_cekanju;
                 zahtjevZaPosudbu.RazlogOdbijanja = "";

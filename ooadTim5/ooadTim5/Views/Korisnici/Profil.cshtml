@@ -5,7 +5,7 @@
 
 <div style="padding: 40px 60px; max-width: 800px;">
 
-    <!-- Header kartica -->
+    <!-- Header -->
     <div style="background: #1a4a3a; border-radius: 16px 16px 0 0; padding: 30px 36px;
         display: flex; align-items: center; gap: 20px;">
         <div style="width: 60px; height: 60px; border-radius: 14px; background: #c8621a;
@@ -26,7 +26,6 @@
         box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 36px;">
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
-
             <div>
                 <p style="color: #c8621a; font-size: 0.75rem; font-weight: 700;
                     text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;">
@@ -66,31 +65,46 @@
                     @(kartica != null ? kartica.ClanstvoVaziDo.ToString("dd. MMMM yyyy.") : "-")
                 </p>
             </div>
-
         </div>
 
-        <!-- Status -->
+        <!-- Status + QR -->
         <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid #f0ebe4;
             display: flex; justify-content: space-between; align-items: center;">
-            @if (kartica != null && kartica.Aktivan)
-            {
-                <span style="color: #2e7d32; font-weight: 700; font-size: 0.88rem;">
-                    ● AKTIVAN PROFIL
-                </span>
-            }
-            else
-            {
-                <span style="color: #c62828; font-weight: 700; font-size: 0.88rem;">
-                    ● NEAKTIVAN PROFIL
-                </span>
-            }
+
+            <div>
+                @if (kartica != null && kartica.Aktivan)
+                {
+                    <span style="color: #2e7d32; font-weight: 700; font-size: 0.88rem;">
+                        ● AKTIVAN PROFIL
+                    </span>
+                }
+                else
+                {
+                    <span style="color: #c62828; font-weight: 700; font-size: 0.88rem;">
+                        ● NEAKTIVAN PROFIL
+                    </span>
+                }
+                @if (kartica != null)
+                {
+                    <span style="color: #999; font-size: 0.85rem; margin-left: 12px;">
+                        ID: @kartica.BrojKartice
+                    </span>
+                }
+            </div>
 
             @if (kartica != null)
             {
-                <span style="color: #999; font-size: 0.85rem;">
-                    ID: @kartica.BrojKartice
-                </span>
+                var qrUrl = $"{Context.Request.Scheme}://{Context.Request.Host}/Korisnici/Profil";
+                var qrApiUrl = $"https://api.qrserver.com/v1/create-qr-code/?size=120x120&data={Uri.EscapeDataString(qrUrl)}";
+                <div style="text-align: center;">
+                    <p style="color: #999; font-size: 0.75rem; margin-bottom: 6px;">
+                        Skeniraj za pristup profilu
+                    </p>
+                    <img src="@qrApiUrl" alt="QR kod"
+                         style="border: 3px solid #f0ebe4; border-radius: 8px;" />
+                </div>
             }
+
         </div>
     </div>
 </div>

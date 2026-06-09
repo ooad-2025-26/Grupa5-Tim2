@@ -1,5 +1,63 @@
 ﻿@{
     ViewData["Title"] = "O nama";
 }
-<h2>O nama</h2>
-<p>Stranica u izradi...</p>
+
+<div style="display: flex; align-items: center;
+    min-height: 85vh; padding: 0 60px; gap: 40px;">
+
+    <!-- Lijeva strana - tekst -->
+    <div style="flex: 0 0 45%; padding-right: 20px;">
+        <h1 style="font-size: 4.5rem; font-weight: 800;
+            color: #1a4a3a; margin-bottom: 15px;
+            line-height: 1.1;">
+            O nama
+        </h1>
+        <h3 style="color: #1a4a3a; font-weight: 600;
+            margin-bottom: 20px; font-size: 1.2rem;">
+            Grupa 5 · Tim 2 · ETF UNSA
+        </h3>
+        <p style="color: #666; font-size: 1rem;
+            line-height: 1.7; margin-bottom: 35px;">
+            LitHub je web aplikacija razvijena kao projektni zadatak iz predmeta
+            <strong style="color: #1a4a3a;">Objektno orijentirana analiza i dizajn (OOAD).</strong>
+      
+            Aplikacija omogućava upravljanje bibliotečkim članstvima,
+            evidenciju članova i izdavanje članskih kartica.
+        </p>
+
+        <!-- Članovi tima -->
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 14px;">
+                <div style="width: 38px; height: 38px; border-radius: 10px;
+                    background: #c8621a; display: flex; align-items: center;
+                    justify-content: center; color: white; font-weight: 700;
+                    font-size: 0.85rem; flex-shrink: 0;">AK</div>
+                <span style="font-weight: 600; color: #1a1a1a;">Amina Kunić</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 14px;">
+                <div style="width: 38px; height: 38px; border-radius: 10px;
+                    background: #c8621a; display: flex; align-items: center;
+                    justify-content: center; color: white; font-weight: 700;
+                    font-size: 0.85rem; flex-shrink: 0;">SS</div>
+                <span style="font-weight: 600; color: #1a1a1a;">Samra Salkica</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 14px;">
+                <div style="width: 38px; height: 38px; border-radius: 10px;
+                    background: #c8621a; display: flex; align-items: center;
+                    justify-content: center; color: white; font-weight: 700;
+                    font-size: 0.85rem; flex-shrink: 0;">SM</div>
+                <span style="font-weight: 600; color: #1a1a1a;">Sarah Mrakić</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Desna strana - slika -->
+    <div style="flex: 0 0 55%; height: 85vh;
+        overflow: hidden; margin-right: -60px;">
+        <img src="~/images/profilnaa.png"
+             style="width: 100%; height: 100%;
+             object-fit: cover;
+             object-position: left center;" />
+    </div>
+
+</div>

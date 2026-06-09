@@ -22,31 +22,24 @@
 
             <input type="hidden" asp-for="KorisnikId" />
 
-            <!-- BROJ KARTICE -->
-            <div style="margin-bottom:15px;">
-                <label style="font-weight:600; color:#333;">Broj kartice</label>
-                <input asp-for="BrojKartice"
-                       class="form-control"
-                       style="border-radius:10px; padding:10px;" />
-                <span asp-validation-for="BrojKartice" style="color:red;"></span>
-            </div>
-
-            <!-- DATUM IZDAVANJA -->
+            <!-- DATUM IZDAVANJA - readonly -->
             <div style="margin-bottom:15px;">
                 <label style="font-weight:600; color:#333;">Datum izdavanja</label>
                 <input asp-for="DatumIzdavanja"
                        class="form-control"
                        type="date"
-                       style="border-radius:10px; padding:10px;" />
+                       readonly
+                       style="border-radius:10px; padding:10px; background:#f5f5f5;" />
             </div>
 
-            <!-- VRIJEDI DO -->
+            <!-- VRIJEDI DO - readonly -->
             <div style="margin-bottom:15px;">
                 <label style="font-weight:600; color:#333;">Članstvo važi do</label>
                 <input asp-for="ClanstvoVaziDo"
                        class="form-control"
                        type="date"
-                       style="border-radius:10px; padding:10px;" />
+                       readonly
+                       style="border-radius:10px; padding:10px; background:#f5f5f5;" />
             </div>
 
             <!-- AKTIVAN -->
