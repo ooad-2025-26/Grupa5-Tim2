@@ -40,5 +40,8 @@ namespace ooadTim5.Models
         [EnumDataType(typeof(StatusNabavke))]
         [DisplayName("Status:")]
         public StatusNabavke Status { get; set; }
+
+        public string? NazivKnjige { get; set; }   // NOVO
+        public string? AutorKnjige { get; set; }
     }
 }

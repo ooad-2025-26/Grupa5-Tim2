@@ -1,53 +1,127 @@
 ﻿@model IEnumerable<ooadTim5.Models.NabavkaKnjiga>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Nabavka knjiga";
 }
 
-<h1>Index</h1>
+<div style="padding: 40px 60px;">
 
-<p>
-    @if (User.IsInRole("administrator") || User.IsInRole("bibliotekar"))
-    {
-        <a asp-action="Create">Create New</a>
-    }
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>@Html.DisplayNameFor(model => model.Knjiga)</th>
-            <th>@Html.DisplayNameFor(model => model.Dobavljac)</th>
-            <th>@Html.DisplayNameFor(model => model.Kolicina)</th>
-            <th>@Html.DisplayNameFor(model => model.DatumNarudzbe)</th>
-            <th>@Html.DisplayNameFor(model => model.OcekivaniDatumIsporuke)</th>
-            <th>@Html.DisplayNameFor(model => model.Status)</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@Html.DisplayFor(modelItem => item.Knjiga.Autor)</td>
-                <td>@Html.DisplayFor(modelItem => item.Dobavljac.KontaktEmail)</td>
-                <td>@Html.DisplayFor(modelItem => item.Kolicina)</td>
-                <td>@Html.DisplayFor(modelItem => item.DatumNarudzbe)</td>
-                <td>@Html.DisplayFor(modelItem => item.OcekivaniDatumIsporuke)</td>
-                <td>@Html.DisplayFor(modelItem => item.Status)</td>
-                <td>
-                    @if (User.IsInRole("administrator") || User.IsInRole("bibliotekar"))
-                    {
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                        <text> | </text>
-                    }
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
-                    @if (User.IsInRole("administrator"))
-                    {
-                        <text> | </text>
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                    }
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+        <h1 style="color:#1a4a3a; font-weight:800;">
+            Nabavka knjiga
+        </h1>
+
+        <a asp-action="Create"
+               style="background:#2e7d32; color:white; padding:10px 22px;
+            border-radius:25px; font-weight:700; text-decoration:none;
+            text-transform:uppercase; font-size:0.85rem;">
+            + Nova nabavka
+        </a>
+    </div>
+
+    <div style="background:white; border-radius:16px; overflow:hidden;
+        box-shadow:0 2px 16px rgba(0,0,0,0.08);">
+
+        <table style="width:100%; border-collapse:collapse;">
+
+            <thead>
+                <tr style="background:#e8e4f0;">
+                    <th style="padding:16px;">Knjiga</th>
+                    <th style="padding:16px;">Dobavljač</th>
+                    <th style="padding:16px;">Količina</th>
+                    <th style="padding:16px;">Datum narudžbe</th>
+                    <th style="padding:16px;">Status</th>
+                    <th style="padding:16px;">Akcije</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr style="border-bottom:1px solid #eee;">
+
+                        <td style="padding:14px; font-weight:600; color:#1a4a3a;">
+                            @item.Knjiga?.Naziv
+                        </td>
+
+                        <td style="padding:14px;">
+                            @item.Dobavljac?.Naziv
+                        </td>
+
+                        <td style="padding:14px;">
+                            @item.Kolicina
+                        </td>
+
+                        <td style="padding:14px;">
+                            @item.DatumNarudzbe.ToString("dd.MM.yyyy")
+                        </td>
+
+                        <!-- STATUS BADGE -->
+                        <td style="padding:14px;">
+                            @if (item.Status.ToString() == "u_obradi")
+                            {
+                                <span style="background:orange; color:white; padding:5px 12px;
+                                    border-radius:20px; font-size:0.8rem; font-weight:700;">
+                                    U obradi
+                                </span>
+                            }
+                            else if (item.Status.ToString() == "poslano")
+                            {
+                                <span style="background:#1976d2; color:white; padding:5px 12px;
+                                    border-radius:20px; font-size:0.8rem; font-weight:700;">
+                                    Poslano
+                                </span>
+                            }
+                            else if (item.Status.ToString() == "primljeno")
+                            {
+                                <span style="background:#2e7d32; color:white; padding:5px 12px;
+                                    border-radius:20px; font-size:0.8rem; font-weight:700;">
+                                    Primljeno
+                                </span>
+                            }
+                            else
+                            {
+                                <span style="background:#c62828; color:white; padding:5px 12px;
+                                    border-radius:20px; font-size:0.8rem; font-weight:700;">
+                                    Otkazano
+                                </span>
+                            }
+                        </td>
+
+                        <!-- AKCIJE -->
+                        <td style="padding:14px; display:flex; gap:8px; align-items:center;">
+
+                            <a asp-action="Edit" asp-route-id="@item.Id"
+                                   style="background:#1a4a3a; color:white; padding:6px 14px;
+                                border-radius:20px; text-decoration:none; font-size:0.8rem;">
+                                Uredi
+                            </a>
+
+                            <!-- STATUS CHANGE -->
+                            <form asp-action="PromijeniStatus" method="post" style="display:flex; gap:6px;">
+                                <input type="hidden" name="id" value="@item.Id" />
+
+                                <select name="status"
+                                        style="padding:5px; border-radius:10px;">
+                                    <option value="u_obradi">U obradi</option>
+                                    <option value="poslano">Poslano</option>
+                                    <option value="primljeno">Primljeno</option>
+                                    <option value="otkazano">Otkazano</option>
+                                </select>
+
+                                <button type="submit"
+                                        style="background:#555; color:white;
+                                    border:none; padding:6px 10px;
+                                    border-radius:10px;">
+                                    OK
+                                </button>
+                            </form>
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+    </div>
+</div>

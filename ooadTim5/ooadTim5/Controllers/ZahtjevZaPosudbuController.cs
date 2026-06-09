@@ -58,7 +58,6 @@ namespace ooadTim5.Controllers
             return View(moji);
         }
 
-        // DETAILS
         [Authorize(Roles = "administrator,bibliotekar,clan")]
         public async Task<IActionResult> Details(int? id)
         {
@@ -70,8 +69,26 @@ namespace ooadTim5.Controllers
 
             if (zahtjev == null) return NotFound();
 
-            var user = await _userManager.FindByIdAsync(zahtjev.KorisnikId ?? "");
-            ViewBag.KorisnikEmail = user?.Email ?? zahtjev.KorisnikId;
+            var user = await _userManager.FindByIdAsync(zahtjev.KorisnikId);
+
+            ViewBag.KorisnikIme = user?.UserName ?? user?.Email ?? "Nepoznat korisnik";
+
+            var aktivnePosudbe = await _context.Posudbe
+                .Include(p => p.Knjiga)
+                .Where(p => p.ClanId == zahtjev.KorisnikId && p.DatumVracanja == null)
+                .ToListAsync();
+
+            ViewBag.AktivnePosudbe = aktivnePosudbe;
+
+            var kartica = await _context.ClanskeKartice
+                .FirstOrDefaultAsync(x => x.KorisnikId == zahtjev.KorisnikId);
+
+            ViewBag.Kartica = kartica;
+
+            ViewBag.ValidnaKartica =
+                kartica != null &&
+                kartica.Aktivan &&
+                kartica.ClanstvoVaziDo >= DateTime.Today;
 
             return View(zahtjev);
         }
@@ -152,11 +169,36 @@ namespace ooadTim5.Controllers
         public async Task<IActionResult> Odobri(int id)
         {
             var zahtjev = await _context.Zahtjevi.FindAsync(id);
-            if (zahtjev == null) return NotFound();
+
+            if (zahtjev == null)
+                return NotFound();
 
             zahtjev.Status = StatusZahtjeva.odobren;
-            zahtjev.RazlogOdbijanja = "";
-            _context.Update(zahtjev);
+
+            var posudba = new Posudba
+            {
+                KnjigaId = zahtjev.KnjigaId,
+                ClanId = zahtjev.KorisnikId,
+
+                DatumPosudbe = DateTime.Now,
+
+                OcekivaniDatumVracanja = DateTime.Now.AddDays(14),
+
+                Status = StatusPosudbe.aktivna,
+                Napomena = ""
+
+            };
+
+            var knjiga = await _context.Knjige
+    .FindAsync(zahtjev.KnjigaId);
+
+            if (knjiga != null)
+            {
+                knjiga.Status = StatusKnjige.nedostupna;
+            }
+
+            _context.Posudbe.Add(posudba);
+
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
@@ -177,35 +219,23 @@ namespace ooadTim5.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // DELETE
+        // DELETE ZAHTJEV (ADMIN)
         [Authorize(Roles = "administrator")]
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null) return NotFound();
-
-            var zahtjev = await _context.Zahtjevi
-                .Include(z => z.Knjiga)
-                .FirstOrDefaultAsync(z => z.Id == id);
-
-            if (zahtjev == null) return NotFound();
-
-            return View(zahtjev);
-        }
-
-        [HttpPost, ActionName("Delete")]
-        [Authorize(Roles = "administrator")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             var zahtjev = await _context.Zahtjevi.FindAsync(id);
 
-            if (zahtjev != null)
-            {
-                _context.Zahtjevi.Remove(zahtjev);
-            }
+            if (zahtjev == null)
+                return NotFound();
 
+            _context.Zahtjevi.Remove(zahtjev);
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
+
+        
     }
 }

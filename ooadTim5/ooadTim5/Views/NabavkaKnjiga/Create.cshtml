@@ -1,116 +1,42 @@
-﻿@model ooadTim5.Models.Knjiga
+﻿@model ooadTim5.Models.NabavkaKnjiga
 
-<div style="display:flex; justify-content:center; padding:40px;">
+@{
+    ViewData["Title"] = "Nova nabavka";
+}
 
-    <div style="
-        width:550px;
-        background:white;
-        border-radius:16px;
-        box-shadow:0 6px 20px rgba(0,0,0,0.12);
-        padding:30px;
-        ">
+<div style="padding:40px 60px;">
 
-        <h2 style="
-            text-align:center;
-            color:#1a4a3a;
-            font-weight:800;
-            margin-bottom:25px;">
-            Dodavanje knjige
-        </h2>
+    <div style="background:white; border-radius:16px; padding:30px;
+        box-shadow:0 2px 16px rgba(0,0,0,0.08); max-width:700px;">
 
-        <form asp-action="Create" method="post" enctype="multipart/form-data">
+        <h2 style="color:#1a4a3a;">Nova nabavka knjiga</h2>
 
-            <!-- NAZIV -->
-            <div style="margin-bottom:12px;">
-                <label style="font-weight:600;">Naziv</label>
-                <input asp-for="Naziv"
-                       class="form-control"
-                       style="border-radius:10px; padding:10px;" />
-                <span asp-validation-for="Naziv" class="text-danger"></span>
-            </div>
+        <form asp-action="Create">
 
-            <!-- AUTOR -->
-            <div style="margin-bottom:12px;">
-                <label style="font-weight:600;">Autor</label>
-                <input asp-for="Autor"
-                       class="form-control"
-                       style="border-radius:10px; padding:10px;" />
-                <span asp-validation-for="Autor" class="text-danger"></span>
-            </div>
+            <input asp-for="NazivKnjige" placeholder="Naziv knjige" class="form-control" />
 
-            <!-- ISBN -->
-            <div style="margin-bottom:12px;">
-                <label style="font-weight:600;">ISBN</label>
-                <input asp-for="ISBN"
-                       class="form-control"
-                       style="border-radius:10px; padding:10px;" />
-                <span asp-validation-for="ISBN" class="text-danger"></span>
-            </div>
+            <input asp-for="AutorKnjige" placeholder="Autor" class="form-control" />
 
-            <!-- KATEGORIJA -->
-            <div style="margin-bottom:12px;">
-                <label style="font-weight:600;">Kategorija</label>
-                <input asp-for="Kategorija"
-                       class="form-control"
-                       style="border-radius:10px; padding:10px;" />
-            </div>
+            <label>Dobavljač</label>
+            <select asp-for="DobavljacId" asp-items="ViewBag.DobavljacId"
+                    style="width:100%; padding:10px; margin-bottom:10px;"></select>
 
-            <!-- GODINA -->
-            <div style="margin-bottom:12px;">
-                <label style="font-weight:600;">Godina izdanja</label>
-                <input asp-for="GodinaIzdanja"
-                       type="number"
-                       class="form-control"
-                       style="border-radius:10px; padding:10px;" />
-            </div>
+            <input asp-for="Kolicina" placeholder="Količina"
+                   style="width:100%; padding:10px; margin-bottom:10px;" />
 
-            <!-- STRANICE -->
-            <div style="margin-bottom:12px;">
-                <label style="font-weight:600;">Broj stranica</label>
-                <input asp-for="BrojStranica"
-                       type="number"
-                       class="form-control"
-                       style="border-radius:10px; padding:10px;" />
-            </div>
+            <input asp-for="OcekivaniDatumIsporuke"
+                   type="date"
+                   style="width:100%; padding:10px; margin-bottom:20px;" />
 
-            <!-- IZDAVAČ -->
-            <div style="margin-bottom:12px;">
-                <label style="font-weight:600;">Izdavač</label>
-                <input asp-for="Izdavac"
-                       class="form-control"
-                       style="border-radius:10px; padding:10px;" />
-            </div>
-
-            <!-- NASLOVNICA -->
-            <div style="margin-bottom:20px;">
-                <label style="font-weight:600;">Naslovnica (URL ili putanja)</label>
-                <input asp-for="Naslovnica"
-                       class="form-control"
-                       style="border-radius:10px; padding:10px;" />
-            </div>
-
-            <!-- STATUS -->
-            <div style="margin-bottom:20px;">
-                <label style="font-weight:600;">Status</label>
-                <select asp-for="Status"
-                        class="form-control"
-                        style="border-radius:10px; padding:10px;">
-                </select>
-            </div>
-
-            <!-- BUTTON -->
             <button type="submit"
-                    style="
-                width:100%;
-                background:#1a4a3a;
-                color:white;
-                border:none;
-                padding:12px;
-                border-radius:12px;
-                font-weight:700;">
-                Sačuvaj knjigu
+                    style="background:#2e7d32; color:white; padding:10px 20px;
+                border:none; border-radius:25px;">
+                Sačuvaj
             </button>
 
+            <a asp-action="Index" style="margin-left:10px;">Nazad</a>
+
         </form>
+
     </div>
 </div>

@@ -9,78 +9,70 @@
     <div style="background: white; border-radius: 16px; overflow: hidden;
         box-shadow: 0 2px 16px rgba(0,0,0,0.08);">
 
-        <!-- Header tabela -->
+        <!-- HEADER -->
         <table style="width: 100%; border-collapse: collapse;">
             <thead>
                 <tr style="background: #e8e4f0;">
-                    <th style="padding: 16px 24px; font-weight: 700; color: #1a1a2e; width: 50%;">Korisnik</th>
-                    <th style="padding: 16px 24px; font-weight: 700; color: #1a1a2e; width: 50%; border-left: 1px solid #d0cce0;">Knjiga</th>
+                    <th style="padding: 16px 24px;">Korisnik</th>
+                    <th style="padding: 16px 24px; border-left: 1px solid #ddd;">Knjiga</th>
                 </tr>
             </thead>
+
             <tbody>
-                <tr style="vertical-align: top;">
-                    <!-- Korisnik kolona -->
+                <tr>
+                    <!-- KORISNIK -->
                     <td style="padding: 24px; border-bottom: 1px solid #eee;">
-                        <p style="margin: 0 0 8px 0; font-size: 0.95rem;">
-                            <strong>Ime:</strong> @ViewBag.KorisnikEmail
-                        </p>
-                        <p style="margin: 0; font-size: 0.95rem;">
-                            <strong>Datum zahtjeva:</strong> @Model.DatumZahtjeva.ToString("dd.MM.yyyy")
-                        </p>
+                        <p><strong>Ime:</strong> @ViewBag.KorisnikEmail</p>
+                        <p><strong>Datum zahtjeva:</strong> @Model.DatumZahtjeva.ToString("dd.MM.yyyy")</p>
                     </td>
 
-                    <!-- Knjiga kolona -->
+                    <!-- KNJIGA -->
                     <td style="padding: 24px; border-left: 1px solid #eee; border-bottom: 1px solid #eee;">
-                        <p style="margin: 0 0 8px 0; font-size: 0.95rem;">
-                            <strong>Naslov:</strong> @Model.Knjiga?.Naziv
-                        </p>
-                        <p style="margin: 0 0 8px 0; font-size: 0.95rem;">
-                            <strong>Autor:</strong> @Model.Knjiga?.Autor
-                        </p>
-                        <p style="margin: 0; font-size: 0.95rem;">
+                        <p><strong>Naslov:</strong> @Model.Knjiga?.Naziv</p>
+                        <p><strong>Autor:</strong> @Model.Knjiga?.Autor</p>
+
+                        <p>
                             <strong>Dostupnost:</strong>
                             @if (Model.Knjiga?.Status.ToString() == "dostupna")
                             {
-                                <span style="color: #2e7d32; font-weight: 700;">Dostupna</span>
+                                <span style="color:green;font-weight:700;">Dostupna</span>
                             }
                             else
                             {
-                                <span style="color: #c62828; font-weight: 700;">Nije dostupna</span>
+                                <span style="color:red;font-weight:700;">Nedostupna</span>
                             }
                         </p>
                     </td>
                 </tr>
 
-                <!-- Status row -->
+                <!-- STATUS -->
                 <tr>
-                    <td colspan="2" style="padding: 16px 24px; border-bottom: 1px solid #eee;">
-                        <strong>Status zahtjeva:</strong>
+                    <td colspan="2" style="padding: 16px 24px;">
+                        <strong>Status:</strong>
+
                         @if (Model.Status.ToString() == "Na_cekanju")
                         {
-                            <span style="background: #fff3e0; color: #e65100; padding: 4px 14px;
-                                border-radius: 20px; font-size: 0.85rem; font-weight: 700; margin-left: 8px;">
+                            <span style="background:orange;color:white;padding:4px 10px;border-radius:10px;">
                                 Na čekanju
                             </span>
                         }
                         else if (Model.Status.ToString() == "odobren")
                         {
-                            <span style="background: #e8f5e9; color: #2e7d32; padding: 4px 14px;
-                                border-radius: 20px; font-size: 0.85rem; font-weight: 700; margin-left: 8px;">
+                            <span style="background:green;color:white;padding:4px 10px;border-radius:10px;">
                                 Odobren
                             </span>
                         }
                         else
                         {
-                            <span style="background: #fce4e4; color: #c62828; padding: 4px 14px;
-                                border-radius: 20px; font-size: 0.85rem; font-weight: 700; margin-left: 8px;">
+                            <span style="background:red;color:white;padding:4px 10px;border-radius:10px;">
                                 Odbijen
                             </span>
                         }
 
                         @if (!string.IsNullOrEmpty(Model.RazlogOdbijanja))
                         {
-                            <span style="margin-left: 16px; color: #666; font-size: 0.9rem;">
-                                Razlog: @Model.RazlogOdbijanja
+                            <span style="margin-left:10px;color:#666;">
+                                (@Model.RazlogOdbijanja)
                             </span>
                         }
                     </td>
@@ -88,43 +80,87 @@
             </tbody>
         </table>
 
-        <!-- Akcije za bibliotekara/admina -->
-        @if ((User.IsInRole("administrator") || User.IsInRole("bibliotekar")) && Model.Status.ToString() == "Na_cekanju")
+        <!-- ⚠ POSUDBE -->
+        @if (ViewBag.AktivnePosudbe != null &&
+                    ((List<ooadTim5.Models.Posudba>)ViewBag.AktivnePosudbe).Any())
         {
-            <div style="padding: 20px 24px; display: flex; align-items: center; gap: 16px; background: #fafafa;">
+            <div style="margin:20px 24px;background:#fff3cd;padding:15px;border-radius:10px;">
+                <strong>⚠ Nevraćene knjige:</strong>
+                <ul>
+                    @foreach (var p in (List<ooadTim5.Models.Posudba>)ViewBag.AktivnePosudbe)
+                    {
+                        <li>
+                            @p.Knjiga?.Naziv
+                            (rok: @p.OcekivaniDatumVracanja.ToString("dd.MM.yyyy"))
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
 
-                <form asp-action="Odobri" asp-route-id="@Model.Id" method="post" style="margin:0;">
-                    @Html.AntiForgeryToken()
-                    <button type="submit"
-                            style="background: #2e7d32; color: white; border: none; border-radius: 25px;
-                        padding: 10px 28px; font-weight: 700; font-size: 0.88rem;
-                        text-transform: uppercase; cursor: pointer;">
-                        Odobri zahtjev
-                    </button>
-                </form>
+        <!-- 📌 ČLANSKA KARTICA -->
+        <div style="margin:20px 24px;">
 
-                <form asp-action="Odbij" asp-route-id="@Model.Id" method="post"
-                      style="margin:0; display: flex; align-items: center; gap: 10px;">
+            @if (ViewBag.Kartica == null)
+            {
+                <div style="background:#ffebee;color:#c62828;padding:12px;border-radius:10px;">
+                    ❌ Korisnik nema člansku karticu!
+                </div>
+            }
+            else if (!(bool)ViewBag.ValidnaKartica)
+            {
+                <div style="background:#fff3e0;color:#e65100;padding:12px;border-radius:10px;">
+                    ⚠ Kartica nije validna ili je istekla!
+                    <br />
+                    Vrijedi do: @ViewBag.Kartica.ClanstvoVaziDo.ToString("dd.MM.yyyy")
+                </div>
+            }
+            else
+            {
+                <div style="background:#e8f5e9;color:#2e7d32;padding:12px;border-radius:10px;">
+                    ✅ Članska kartica validna
+                </div>
+            }
+        </div>
+
+        <!-- 🔘 AKCIJE -->
+        @if ((User.IsInRole("administrator") || User.IsInRole("bibliotekar"))
+                    && Model.Status.ToString() == "Na_cekanju")
+        {
+            <div style="padding: 20px 24px; display:flex; gap:10px;">
+
+                @if (ViewBag.ValidnaKartica == true)
+                {
+                    <form asp-action="Odobri" asp-route-id="@Model.Id" method="post">
+                        @Html.AntiForgeryToken()
+                        <button style="background:green;color:white;padding:10px 20px;border:none;border-radius:20px;">
+                            Odobri
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <div style="color:red;font-weight:700;align-self:center;">
+                        ❌ Odobravanje nije moguće (kartica nevažeća)
+                    </div>
+                }
+
+                <form asp-action="Odbij" asp-route-id="@Model.Id" method="post">
                     @Html.AntiForgeryToken()
-                    <input type="text" name="razlog" placeholder="Razlog odbijanja..."
-                           style="border: 1px solid #ddd; border-radius: 25px; padding: 10px 18px;
-                    font-size: 0.88rem; width: 260px; outline: none;" />
-                    <button type="submit"
-                            style="background: #c62828; color: white; border: none; border-radius: 25px;
-                        padding: 10px 28px; font-weight: 700; font-size: 0.88rem;
-                        text-transform: uppercase; cursor: pointer;">
-                        Odbij zahtjev
+                    <input name="razlog" placeholder="Razlog..."
+                           style="padding:8px;border-radius:10px;border:1px solid #ccc;" />
+                    <button style="background:red;color:white;padding:10px 20px;border:none;border-radius:20px;">
+                        Odbij
                     </button>
                 </form>
 
             </div>
         }
 
-        <!-- Nazad dugme -->
-        <div style="padding: 16px 24px; border-top: 1px solid #eee;">
-            <a asp-action="Index"
-                   style="color: #1a4a3a; font-weight: 600; text-decoration: none; font-size: 0.9rem;">
-                ← Nazad na listu
+        <!-- 🔙 BACK -->
+        <div style="padding: 16px 24px; border-top:1px solid #eee;">
+            <a asp-action="Index" style="color:#1a4a3a;font-weight:600;text-decoration:none;">
+                ← Nazad
             </a>
         </div>
 

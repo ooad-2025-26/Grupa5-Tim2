@@ -1,55 +1,98 @@
 ﻿@model IEnumerable<ooadTim5.Models.Posudba>
 
-@{
-    ViewData["Title"] = "Index";
-}
+<div style="padding:40px 60px;">
 
-<h1>Index</h1>
+    <h2 style="color:#1a4a3a; font-weight:800; margin-bottom:25px;">
+        Aktivne posudbe
+    </h2>
 
-<p>
-    @if (User.IsInRole("administrator") || User.IsInRole("bibliotekar"))
-    {
-        <a asp-action="Create">Create New</a>
-    }
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>@Html.DisplayNameFor(model => model.Knjiga)</th>
-            <th>@Html.DisplayNameFor(model => model.ClanId)</th>
-            <th>@Html.DisplayNameFor(model => model.DatumPosudbe)</th>
-            <th>@Html.DisplayNameFor(model => model.OcekivaniDatumVracanja)</th>
-            <th>@Html.DisplayNameFor(model => model.DatumVracanja)</th>
-            <th>@Html.DisplayNameFor(model => model.Status)</th>
-            <th>@Html.DisplayNameFor(model => model.Napomena)</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@Html.DisplayFor(modelItem => item.Knjiga.Autor)</td>
-                <td>@Html.DisplayFor(modelItem => item.ClanId)</td>
-                <td>@Html.DisplayFor(modelItem => item.DatumPosudbe)</td>
-                <td>@Html.DisplayFor(modelItem => item.OcekivaniDatumVracanja)</td>
-                <td>@Html.DisplayFor(modelItem => item.DatumVracanja)</td>
-                <td>@Html.DisplayFor(modelItem => item.Status)</td>
-                <td>@Html.DisplayFor(modelItem => item.Napomena)</td>
-                <td>
-                    @if (User.IsInRole("administrator") || User.IsInRole("bibliotekar"))
-                    {
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                        <text> | </text>
-                    }
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
-                    @if (User.IsInRole("administrator"))
-                    {
-                        <text> | </text>
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                    }
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+    <div style="background:white; border-radius:14px; overflow:hidden;
+        box-shadow:0 2px 14px rgba(0,0,0,0.08);">
+
+        <table style="width:100%; border-collapse:collapse;">
+            <thead style="background:#f0ebe4;">
+                <tr>
+                    <th style="padding:15px;">Knjiga</th>
+                    <th style="padding:15px;">Član</th>
+                    <th style="padding:15px;">Datum posudbe</th>
+                    <th style="padding:15px;">Rok vraćanja</th>
+                    <th style="padding:15px;">Status</th>
+                    <th style="padding:15px;">Akcija</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr style="border-bottom:1px solid #eee;">
+                        <td style="padding:15px;">
+                            @item.Knjiga?.Naziv
+                        </td>
+
+                        <td style="padding:15px;">
+                            @(((Dictionary<string, string>)ViewBag.Korisnici)
+    .GetValueOrDefault(item.ClanId ?? "", "Nepoznat korisnik"))
+                        </td>
+
+                        <td style="padding:15px;">
+                            @item.DatumPosudbe.ToString("dd.MM.yyyy")
+                        </td>
+
+                        <td style="padding:15px;">
+                            @item.OcekivaniDatumVracanja.ToString("dd.MM.yyyy")
+                        </td>
+
+                        <td>
+                            @if (item.Status == ooadTim5.Models.Enums.StatusPosudbe.aktivna)
+                            {
+                                <span style="background:#1976d2;color:white;padding:5px 10px;border-radius:15px;">
+                                    Aktivna
+                                </span>
+                            }
+                            else if (item.Status == ooadTim5.Models.Enums.StatusPosudbe.vracena)
+                            {
+                                <span style="background:#2e7d32;color:white;padding:5px 10px;border-radius:15px;">
+                                    Vraćena
+                                </span>
+                            }
+                            else
+                            {
+                                <span style="background:#d32f2f;color:white;padding:5px 10px;border-radius:15px;">
+                                    Kašnjenje
+                                </span>
+                            }
+                        </td>
+
+                        <td style="padding:15px;">
+                            <a asp-action="Details" asp-route-id="@item.Id"
+                                   style="background:#1a4a3a;
+                                color:white;
+                                padding:6px 14px;
+                                border-radius:20px;
+                                text-decoration:none;
+                                font-weight:600;
+                                font-size:0.85rem;
+                                margin-right:8px;
+                                display:inline-block;">
+                                Detalji
+                            </a>
+
+                            @if (item.Status == ooadTim5.Models.Enums.StatusPosudbe.aktivna)
+                            {
+                                <form asp-action="Vrati" method="post" style="display:inline;">
+                                    <input type="hidden" name="id" value="@item.Id" />
+                                    <button style="background:#1a4a3a;color:white;
+                                        border:none;padding:6px 12px;
+                                        border-radius:20px;">
+                                        Vrati
+                                    </button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+    </div>
+</div>

@@ -1,169 +1,98 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ooadTim5.Data;
 using ooadTim5.Models;
+using ooadTim5.Models.Enums;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ooadTim5.Controllers
 {
+    [Authorize(Roles = "administrator,bibliotekar,clan")]
     public class PosudbaController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public PosudbaController(ApplicationDbContext context)
+        public PosudbaController(ApplicationDbContext context,
+                          UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
-        // GET: Posudba
-        [Authorize(Roles = "administrator, bibliotekar, clan")]
+        // LISTA POSUDBI
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Posudbe.Include(p => p.Knjiga);
-            return View(await applicationDbContext.ToListAsync());
-        }
-
-        // GET: Posudba/Details/5
-        [Authorize(Roles = "administrator, bibliotekar, clan")]
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var posudba = await _context.Posudbe
+            var posudbe = await _context.Posudbe
                 .Include(p => p.Knjiga)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (posudba == null)
+                .ToListAsync();
+
+            var users = await _userManager.Users
+                .ToDictionaryAsync(x => x.Id, x => x.UserName ?? x.Email);
+
+            ViewBag.Korisnici = users;
+            foreach (var p in posudbe)
             {
-                return NotFound();
-            }
-
-            return View(posudba);
-        }
-
-        // GET: Posudba/Create
-        [Authorize(Roles = "administrator, bibliotekar")]
-        public IActionResult Create()
-        {
-            ViewData["KnjigaId"] = new SelectList(_context.Knjige, "Id", "Autor");
-            return View();
-        }
-
-        // POST: Posudba/Create
-        [Authorize(Roles = "administrator, bibliotekar")]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,KnjigaId,ClanId,DatumPosudbe,OcekivaniDatumVracanja,DatumVracanja,Status,Napomena")] Posudba posudba)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(posudba);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["KnjigaId"] = new SelectList(_context.Knjige, "Id", "Autor", posudba.KnjigaId);
-            return View(posudba);
-        }
-
-        // GET: Posudba/Edit/5
-        [Authorize(Roles = "administrator, bibliotekar")]
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var posudba = await _context.Posudbe.FindAsync(id);
-            if (posudba == null)
-            {
-                return NotFound();
-            }
-            ViewData["KnjigaId"] = new SelectList(_context.Knjige, "Id", "Autor", posudba.KnjigaId);
-            return View(posudba);
-        }
-
-        // POST: Posudba/Edit/5
-        [Authorize(Roles = "administrator, bibliotekar")]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,KnjigaId,ClanId,DatumPosudbe,OcekivaniDatumVracanja,DatumVracanja,Status,Napomena")] Posudba posudba)
-        {
-            if (id != posudba.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
+                // 1. Ako nije vraćena
+                if (p.DatumVracanja == null)
                 {
-                    _context.Update(posudba);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PosudbaExists(posudba.Id))
+                    // 2. Ako je rok prošao → kasni
+                    if (p.OcekivaniDatumVracanja < DateTime.Today)
                     {
-                        return NotFound();
+                        p.Status = StatusPosudbe.kasnjenje;
                     }
                     else
                     {
-                        throw;
+                        p.Status = StatusPosudbe.aktivna;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
-            ViewData["KnjigaId"] = new SelectList(_context.Knjige, "Id", "Autor", posudba.KnjigaId);
-            return View(posudba);
+
+            return View(posudbe);
         }
 
-        // GET: Posudba/Delete/5
-        [Authorize(Roles = "administrator")]
-        public async Task<IActionResult> Delete(int? id)
+        // DETAILS
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var posudba = await _context.Posudbe
                 .Include(p => p.Knjiga)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(p => p.Id == id);
+
             if (posudba == null)
-            {
                 return NotFound();
-            }
+
+            var user = await _userManager.FindByIdAsync(posudba.ClanId);
+
+            ViewBag.ClanIme = user?.UserName ?? user?.Email ?? posudba.ClanId;
 
             return View(posudba);
         }
 
-        // POST: Posudba/Delete/5
-        [Authorize(Roles = "administrator")]
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        // VRACANJE KNJIGE
+        [HttpPost]
+        public async Task<IActionResult> Vrati(int id)
         {
-            var posudba = await _context.Posudbe.FindAsync(id);
-            if (posudba != null)
-            {
-                _context.Posudbe.Remove(posudba);
-            }
+            var posudba = await _context.Posudbe
+                .Include(p => p.Knjiga)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (posudba == null)
+                return NotFound();
+
+            posudba.DatumVracanja = DateTime.Now;
+            posudba.Status = StatusPosudbe.vracena;
+
+            // optional: vrati knjigu dostupnu
+            if (posudba.Knjiga != null)
+                posudba.Knjiga.Status = StatusKnjige.dostupna;
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
 
-        private bool PosudbaExists(int id)
-        {
-            return _context.Posudbe.Any(e => e.Id == id);
+            return RedirectToAction(nameof(Index));
         }
     }
 }
