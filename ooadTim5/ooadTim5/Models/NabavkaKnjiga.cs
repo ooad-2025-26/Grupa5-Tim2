@@ -12,11 +12,6 @@ namespace ooadTim5.Models
         [Key]
         public int Id { get; set; }
 
-        [ForeignKey("Knjiga")]
-        [DisplayName("Knjiga:")]
-        public int KnjigaId { get; set; }
-        public Knjiga? Knjiga { get; set; }
-
         [ForeignKey("Dobavljac")]
         [DisplayName("Dobavljač:")]
         public int DobavljacId { get; set; }
@@ -41,7 +36,19 @@ namespace ooadTim5.Models
         [DisplayName("Status:")]
         public StatusNabavke Status { get; set; }
 
-        public string? NazivKnjige { get; set; }   // NOVO
+        public string? NazivKnjige { get; set; }
+
+  
         public string? AutorKnjige { get; set; }
+
+        public string? ISBN { get; set; }
+
+        public string? Kategorija { get; set; }
+        public int? GodinaIzdanja { get; set; }
+        public int? BrojStranica { get; set; }
+        public string? Izdavac { get; set; }
+        public string? Naslovnica { get; set; }
+
+
     }
 }

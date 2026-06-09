@@ -1,42 +1,68 @@
 ﻿@model ooadTim5.Models.NabavkaKnjiga
+@Html.ValidationSummary(false, "", new { @style = "color:red;" })
 
-@{
-    ViewData["Title"] = "Nova nabavka";
-}
+<div style="padding:40px 60px">
 
-<div style="padding:40px 60px;">
+    <h1 style="color:#1a4a3a;">Nova nabavka knjige</h1>
 
-    <div style="background:white; border-radius:16px; padding:30px;
-        box-shadow:0 2px 16px rgba(0,0,0,0.08); max-width:700px;">
+    <form asp-action="Create" method="post"
+          style="background:white;padding:25px;border-radius:15px;
+        box-shadow:0 4px 12px rgba(0,0,0,0.08);margin-top:20px;">
 
-        <h2 style="color:#1a4a3a;">Nova nabavka knjiga</h2>
+        @Html.AntiForgeryToken()
 
-        <form asp-action="Create">
+        <!-- DOBAVLJAČ -->
+        <label>Dobavljač</label>
+        <select asp-for="DobavljacId" asp-items="ViewBag.DobavljacId"
+                style="width:100%;padding:10px;margin-bottom:10px;">
+        </select>
 
-            <input asp-for="NazivKnjige" placeholder="Naziv knjige" class="form-control" />
+        <!-- KNJIGA PODACI -->
+        <input asp-for="NazivKnjige" placeholder="Naziv knjige"
+               style="width:100%;padding:10px;margin-bottom:10px;" />
 
-            <input asp-for="AutorKnjige" placeholder="Autor" class="form-control" />
+        <input asp-for="AutorKnjige" placeholder="Autor"
+               style="width:100%;padding:10px;margin-bottom:10px;" />
 
-            <label>Dobavljač</label>
-            <select asp-for="DobavljacId" asp-items="ViewBag.DobavljacId"
-                    style="width:100%; padding:10px; margin-bottom:10px;"></select>
+        <input asp-for="ISBN" placeholder="ISBN"
+               style="width:100%;padding:10px;margin-bottom:10px;" />
 
-            <input asp-for="Kolicina" placeholder="Količina"
-                   style="width:100%; padding:10px; margin-bottom:10px;" />
+        <input asp-for="Kategorija" placeholder="Kategorija"
+               style="width:100%;padding:10px;margin-bottom:10px;" />
 
+        <input asp-for="Izdavac" placeholder="Izdavač"
+               style="width:100%;padding:10px;margin-bottom:10px;" />
+
+        <input asp-for="Naslovnica" placeholder="URL naslovnice"
+               style="width:100%;padding:10px;margin-bottom:10px;" />
+
+        <input asp-for="GodinaIzdanja" placeholder="Godina izdanja"
+               style="width:100%;padding:10px;margin-bottom:10px;" />
+
+        <input asp-for="BrojStranica" placeholder="Broj stranica"
+               style="width:100%;padding:10px;margin-bottom:10px;" />
+
+        <input asp-for="Kolicina" placeholder="Kolicina"
+                    style="width:100%;padding:10px;margin-bottom:10px;" />
+
+        <div style="margin-bottom:15px;">
+            <label>Datum narudžbe</label>
+            <input asp-for="DatumNarudzbe"
+                   type="date"
+                   style="width:100%;padding:10px;" />
+        </div>
+
+        <div style="margin-bottom:15px;">
+            <label>Očekivani datum isporuke</label>
             <input asp-for="OcekivaniDatumIsporuke"
                    type="date"
-                   style="width:100%; padding:10px; margin-bottom:20px;" />
+                   style="width:100%;padding:10px;" />
+        </div>
 
-            <button type="submit"
-                    style="background:#2e7d32; color:white; padding:10px 20px;
-                border:none; border-radius:25px;">
-                Sačuvaj
-            </button>
+        <button style="background:#1a4a3a;color:white;padding:12px 20px;
+            border:none;border-radius:10px;">
+            Kreiraj nabavku
+        </button>
 
-            <a asp-action="Index" style="margin-left:10px;">Nazad</a>
-
-        </form>
-
-    </div>
+    </form>
 </div>

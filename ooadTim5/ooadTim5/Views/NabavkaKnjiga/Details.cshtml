@@ -1,54 +1,74 @@
 ﻿@model ooadTim5.Models.NabavkaKnjiga
 
-@{
-    ViewData["Title"] = "Details";
-}
+<div style="padding:40px 60px;">
 
-<h1>Details</h1>
+    <h2 style="color:#1a4a3a;font-weight:800;">Detalji nabavke</h2>
 
-<div>
-    <h4>NabavkaKnjiga</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Knjiga)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Knjiga.Autor)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Dobavljac)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Dobavljac.KontaktEmail)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Kolicina)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Kolicina)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DatumNarudzbe)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DatumNarudzbe)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.OcekivaniDatumIsporuke)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.OcekivaniDatumIsporuke)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Status)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Status)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <div style="background:white;padding:25px;border-radius:12px;
+        box-shadow:0 2px 10px rgba(0,0,0,0.08);
+        margin-top:20px;">
+
+        <p><b>Naziv knjige:</b> @Model.NazivKnjige</p>
+        <p><b>Autor:</b> @Model.AutorKnjige</p>
+        <p><b>ISBN:</b> @Model.ISBN</p>
+        <p><b>Kategorija:</b> @Model.Kategorija</p>
+        <p><b>Izdavač:</b> @Model.Izdavac</p>
+        <p><b>Broj stranica:</b> @Model.BrojStranica</p>
+        <p><b>Godina izdanja:</b> @Model.GodinaIzdanja</p>
+
+        <hr />
+
+        <p>
+            <b>Status:</b>
+            <span style="padding:4px 10px;border-radius:20px;
+                background:#e8f5e9;color:#2e7d32;">
+                @Model.Status
+            </span>
+        </p>
+
+        <p><b>Datum narudžbe:</b> @Model.DatumNarudzbe.ToString("dd.MM.yyyy")</p>
+        <p><b>Očekivana isporuka:</b> @Model.OcekivaniDatumIsporuke.ToString("dd.MM.yyyy")</p>
+
+    </div>
+
+    <!-- AKCIJE -->
+    <div style="margin-top:20px;display:flex;gap:10px;">
+
+        <a asp-action="Index"
+               style="background:#1a4a3a;color:white;padding:10px 18px;
+            border-radius:20px;text-decoration:none;">
+            Nazad
+        </a>
+
+        @if (Model.Status.ToString() == "u_obradi")
+        {
+            <form asp-action="PromijeniStatus" method="post">
+
+                <input type="hidden" name="id" value="@Model.Id" />
+
+                <button type="submit" name="status" value="poslano"
+                        style="background:orange;color:white;
+                    padding:10px 14px;border:none;border-radius:20px;">
+                    Označi kao poslano
+                </button>
+
+            </form>
+        }
+
+        @if (Model.Status.ToString() == "poslano")
+        {
+            <form asp-action="PromijeniStatus" method="post">
+
+                <input type="hidden" name="id" value="@Model.Id" />
+
+                <button type="submit" name="status" value="primljeno"
+                        style="background:green;color:white;
+                    padding:10px 14px;border:none;border-radius:20px;">
+                    Knjiga je došla
+                </button>
+
+            </form>
+        }
+
+    </div>
 </div>

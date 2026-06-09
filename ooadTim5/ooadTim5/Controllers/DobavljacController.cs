@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ooadTim5.Controllers
 {
-    [Authorize(Roles = "administrator,bibliotekar")]
+    [Authorize(Roles = "administrator")]
     public class DobavljacController : Controller
     {
         private readonly ApplicationDbContext _context;

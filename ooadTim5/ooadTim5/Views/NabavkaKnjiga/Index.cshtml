@@ -1,14 +1,14 @@
 ﻿@model IEnumerable<ooadTim5.Models.NabavkaKnjiga>
 
 @{
-    ViewData["Title"] = "Nabavka knjiga";
+    ViewData["Title"] = "Nabavke knjiga";
 }
 
 <div style="padding: 40px 60px;">
 
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
         <h1 style="color:#1a4a3a; font-weight:800;">
-            Nabavka knjiga
+            Nabavke knjiga
         </h1>
 
         <a asp-action="Create"
@@ -23,13 +23,12 @@
         box-shadow:0 2px 16px rgba(0,0,0,0.08);">
 
         <table style="width:100%; border-collapse:collapse;">
-
             <thead>
                 <tr style="background:#e8e4f0;">
-                    <th style="padding:16px;">Knjiga</th>
+                    <th style="padding:16px;">Naziv knjige</th>
+                    <th style="padding:16px;">Autor</th>
                     <th style="padding:16px;">Dobavljač</th>
-                    <th style="padding:16px;">Količina</th>
-                    <th style="padding:16px;">Datum narudžbe</th>
+                    <th style="padding:16px;">Datum</th>
                     <th style="padding:16px;">Status</th>
                     <th style="padding:16px;">Akcije</th>
                 </tr>
@@ -40,8 +39,12 @@
                 {
                     <tr style="border-bottom:1px solid #eee;">
 
-                        <td style="padding:14px; font-weight:600; color:#1a4a3a;">
-                            @item.Knjiga?.Naziv
+                        <td style="padding:14px;">
+                            @item.NazivKnjige
+                        </td>
+
+                        <td style="padding:14px;">
+                            @item.AutorKnjige
                         </td>
 
                         <td style="padding:14px;">
@@ -49,79 +52,34 @@
                         </td>
 
                         <td style="padding:14px;">
-                            @item.Kolicina
-                        </td>
-
-                        <td style="padding:14px;">
                             @item.DatumNarudzbe.ToString("dd.MM.yyyy")
                         </td>
 
-                        <!-- STATUS BADGE -->
                         <td style="padding:14px;">
-                            @if (item.Status.ToString() == "u_obradi")
-                            {
-                                <span style="background:orange; color:white; padding:5px 12px;
-                                    border-radius:20px; font-size:0.8rem; font-weight:700;">
-                                    U obradi
-                                </span>
-                            }
-                            else if (item.Status.ToString() == "poslano")
-                            {
-                                <span style="background:#1976d2; color:white; padding:5px 12px;
-                                    border-radius:20px; font-size:0.8rem; font-weight:700;">
-                                    Poslano
-                                </span>
-                            }
-                            else if (item.Status.ToString() == "primljeno")
-                            {
-                                <span style="background:#2e7d32; color:white; padding:5px 12px;
-                                    border-radius:20px; font-size:0.8rem; font-weight:700;">
-                                    Primljeno
-                                </span>
-                            }
-                            else
-                            {
-                                <span style="background:#c62828; color:white; padding:5px 12px;
-                                    border-radius:20px; font-size:0.8rem; font-weight:700;">
-                                    Otkazano
-                                </span>
-                            }
+                            @item.Status
                         </td>
 
-                        <!-- AKCIJE -->
-                        <td style="padding:14px; display:flex; gap:8px; align-items:center;">
+                        <td style="padding:14px; display:flex; gap:8px;">
 
-                            <a asp-action="Edit" asp-route-id="@item.Id"
+                            <a asp-action="Details" asp-route-id="@item.Id"
                                    style="background:#1a4a3a; color:white; padding:6px 14px;
                                 border-radius:20px; text-decoration:none; font-size:0.8rem;">
-                                Uredi
+                                Detalji
                             </a>
 
-                            <!-- STATUS CHANGE -->
-                            <form asp-action="PromijeniStatus" method="post" style="display:flex; gap:6px;">
-                                <input type="hidden" name="id" value="@item.Id" />
-
-                                <select name="status"
-                                        style="padding:5px; border-radius:10px;">
-                                    <option value="u_obradi">U obradi</option>
-                                    <option value="poslano">Poslano</option>
-                                    <option value="primljeno">Primljeno</option>
-                                    <option value="otkazano">Otkazano</option>
-                                </select>
-
-                                <button type="submit"
-                                        style="background:#555; color:white;
-                                    border:none; padding:6px 10px;
-                                    border-radius:10px;">
-                                    OK
-                                </button>
-                            </form>
+                            <a asp-action="Delete" asp-route-id="@item.Id"
+                                   style="background:#c62828; color:white; padding:6px 14px;
+                                border-radius:20px; text-decoration:none; font-size:0.8rem;">
+                                Obriši
+                            </a>
 
                         </td>
+
                     </tr>
                 }
             </tbody>
 
         </table>
+
     </div>
 </div>

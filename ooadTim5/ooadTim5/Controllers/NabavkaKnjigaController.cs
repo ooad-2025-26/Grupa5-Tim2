@@ -5,12 +5,10 @@ using Microsoft.EntityFrameworkCore;
 using ooadTim5.Data;
 using ooadTim5.Models;
 using ooadTim5.Models.Enums;
-using System;
-using System.Threading.Tasks;
 
 namespace ooadTim5.Controllers
 {
-    [Authorize(Roles = "administrator,bibliotekar")]
+    [Authorize(Roles = "administrator")]
     public class NabavkaKnjigaController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -20,35 +18,25 @@ namespace ooadTim5.Controllers
             _context = context;
         }
 
-       /* public async Task<IActionResult> Index()
+        // INDEX
+        public async Task<IActionResult> Index()
         {
-            var data = await _context.Nabavke
-                .Include(x => x.Knjiga)
-                .Include(x => x.Dobavljac)
-                .ToListAsync();
+            return View(await _context.Nabavke.ToListAsync());
+        }
 
-            return View(data);
-        }*/
-
-        public async Task<IActionResult> Details(int? id)
+        // DETAILS
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null) return NotFound();
-
-            var nabavka = await _context.Nabavke
-                .Include(x => x.Knjiga)
-                .Include(x => x.Dobavljac)
-                .FirstOrDefaultAsync(x => x.Id == id);
-
+            var nabavka = await _context.Nabavke.FirstOrDefaultAsync(x => x.Id == id);
             if (nabavka == null) return NotFound();
 
             return View(nabavka);
         }
 
+        // CREATE GET
         public IActionResult Create()
         {
-            ViewData["KnjigaId"] = new SelectList(_context.Knjige, "Id", "Naziv");
             ViewData["DobavljacId"] = new SelectList(_context.Dobavljaci, "Id", "Naziv");
-
             return View();
         }
 
@@ -58,54 +46,71 @@ namespace ooadTim5.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewData["KnjigaId"] = new SelectList(_context.Knjige, "Id", "Naziv");
                 ViewData["DobavljacId"] = new SelectList(_context.Dobavljaci, "Id", "Naziv");
                 return View(model);
             }
 
             model.Status = StatusNabavke.u_obradi;
+            model.DatumNarudzbe = DateTime.Now;
 
-            _context.Add(model);
+            _context.Nabavke.Add(model);
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null) return NotFound();
-
-            var nabavka = await _context.Nabavke.FindAsync(id);
+            var nabavka = await _context.Nabavke.FirstOrDefaultAsync(x => x.Id == id);
             if (nabavka == null) return NotFound();
-
-            ViewData["KnjigaId"] = new SelectList(_context.Knjige, "Id", "Naziv", nabavka.KnjigaId);
-            ViewData["DobavljacId"] = new SelectList(_context.Dobavljaci, "Id", "Naziv", nabavka.DobavljacId);
 
             return View(nabavka);
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, NabavkaKnjiga model)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (id != model.Id) return NotFound();
+            var nabavka = await _context.Nabavke.FindAsync(id);
 
-            if (!ModelState.IsValid)
-                return View(model);
-
-            _context.Update(model);
-            await _context.SaveChangesAsync();
+            if (nabavka != null)
+            {
+                _context.Nabavke.Remove(nabavka);
+                await _context.SaveChangesAsync();
+            }
 
             return RedirectToAction(nameof(Index));
         }
 
+        // PROMJENA STATUSA (JEDNO DUGME LOGIKA)
         [HttpPost]
-        public async Task<IActionResult> PromijeniStatus(int id, StatusNabavke status)
+        public async Task<IActionResult> PromijeniStatus(int id)
         {
-            var nabavka = await _context.Nabavke.FindAsync(id);
+            var nabavka = await _context.Nabavke.FirstOrDefaultAsync(x => x.Id == id);
             if (nabavka == null) return NotFound();
 
-            nabavka.Status = status;
+            if (nabavka.Status == StatusNabavke.u_obradi)
+                nabavka.Status = StatusNabavke.poslano;
+
+            else if (nabavka.Status == StatusNabavke.poslano)
+            {
+                nabavka.Status = StatusNabavke.primljeno;
+
+                // 👉 KREIRAJ KNJIGU
+                var knjiga = new Knjiga
+                {
+                    Naziv = nabavka.NazivKnjige,
+                    Autor = nabavka.AutorKnjige,
+                    ISBN = nabavka.ISBN,
+                    Kategorija = nabavka.Kategorija,
+                    GodinaIzdanja = nabavka.GodinaIzdanja ?? 0,
+                    BrojStranica = nabavka.BrojStranica ?? 1,
+                    Izdavac = nabavka.Izdavac,
+                    Naslovnica = nabavka.Naslovnica,
+                    Status = StatusKnjige.dostupna
+                };
+
+                _context.Knjige.Add(knjiga);
+            }
 
             await _context.SaveChangesAsync();
 
