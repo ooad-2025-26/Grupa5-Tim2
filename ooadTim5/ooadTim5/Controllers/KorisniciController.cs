@@ -4,12 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ooadTim5.Data;
 using ooadTim5.Models;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ooadTim5.Controllers
 {
-
     public class KorisniciController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -20,6 +17,7 @@ namespace ooadTim5.Controllers
             _context = context;
             _userManager = userManager;
         }
+
         [Authorize(Roles = "administrator")]
         public async Task<IActionResult> Index()
         {
@@ -41,12 +39,15 @@ namespace ooadTim5.Controllers
             return View(lista);
         }
 
-        // PROFIL - korisnik vidi svoj profil
         [Authorize(Roles = "administrator,bibliotekar,clan")]
         public async Task<IActionResult> Profil()
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null) return NotFound();
+            if (user == null)
+            {
+                ViewBag.Greska = "Korisnik nije pronađen.";
+                return NotFound();
+            }
 
             var kartica = await _context.ClanskeKartice
                 .FirstOrDefaultAsync(k => k.KorisnikId == user.Id);
@@ -57,11 +58,14 @@ namespace ooadTim5.Controllers
             return View();
         }
 
-        // DETALJI - admin vidi profil bilo kojeg korisnika
         public async Task<IActionResult> Details(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
-            if (user == null) return NotFound();
+            if (user == null)
+            {
+                ViewBag.Greska = "Korisnik nije pronađen.";
+                return NotFound();
+            }
 
             var roles = await _userManager.GetRolesAsync(user);
             var kartica = await _context.ClanskeKartice
@@ -93,7 +97,17 @@ namespace ooadTim5.Controllers
             }
 
             foreach (var error in result.Errors)
-                ModelState.AddModelError("", error.Description);
+                ModelState.AddModelError("", error.Code switch
+                {
+                    "DuplicateUserName" => "Korisnik s ovim emailom već postoji.",
+                    "DuplicateEmail" => "Korisnik s ovim emailom već postoji.",
+                    "PasswordTooShort" => "Lozinka mora imati najmanje 6 karaktera.",
+                    "PasswordRequiresNonAlphanumeric" => "Lozinka mora sadržavati poseban karakter (npr. @, !, #).",
+                    "PasswordRequiresLower" => "Lozinka mora sadržavati malo slovo.",
+                    "PasswordRequiresUpper" => "Lozinka mora sadržavati veliko slovo.",
+                    "PasswordRequiresDigit" => "Lozinka mora sadržavati broj.",
+                    _ => error.Description
+                });
 
             return View(model);
         }
@@ -105,7 +119,6 @@ namespace ooadTim5.Controllers
             if (user == null) return NotFound();
 
             var roles = await _userManager.GetRolesAsync(user);
-
             var kartica = await _context.ClanskeKartice
                 .FirstOrDefaultAsync(k => k.KorisnikId == id);
 
@@ -117,11 +130,9 @@ namespace ooadTim5.Controllers
             };
 
             ViewBag.Kartica = kartica;
-
             return View(model);
         }
 
-        [HttpPost]
         [HttpPost]
         public async Task<IActionResult> Edit(IzmijeniKorisnikaViewModel model)
         {
@@ -137,7 +148,6 @@ namespace ooadTim5.Controllers
             await _userManager.RemoveFromRolesAsync(user, roles);
             await _userManager.AddToRoleAsync(user, model.Rola);
 
-            // ---- KARTICA ----
             var kartica = await _context.ClanskeKartice
                 .FirstOrDefaultAsync(k => k.KorisnikId == model.Id);
 
@@ -151,7 +161,6 @@ namespace ooadTim5.Controllers
                     Aktivan = Request.Form["Aktivan"].Count > 0,
                     DatumIzdavanja = DateTime.Now
                 };
-
                 _context.ClanskeKartice.Add(nova);
             }
             else
@@ -162,7 +171,6 @@ namespace ooadTim5.Controllers
             }
 
             await _context.SaveChangesAsync();
-
             return RedirectToAction("Index");
         }
 
@@ -189,7 +197,11 @@ namespace ooadTim5.Controllers
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
-            if (user == null) return NotFound();
+            if (user == null)
+            {
+                ViewBag.Greska = "Korisnik nije pronađen.";
+                return NotFound();
+            }
 
             await _userManager.DeleteAsync(user);
             return RedirectToAction("Index");

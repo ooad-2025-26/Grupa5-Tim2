@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ooadTim5.Data;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
@@ -23,6 +24,8 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = "/Home/Prijava";
 });
 builder.Services.AddScoped<ooadTim5.Services.EmailService>();
+QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

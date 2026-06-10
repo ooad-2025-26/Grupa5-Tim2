@@ -129,7 +129,7 @@ namespace ooadTim5.Controllers
 
                     if (kartica == null)
                     {
-                        TempData["Greska"] = "Nemate aktivnu člansku karticu. Molimo posjetite biblioteku da dobijete karticu.";
+                        TempData["Greska"] = "Nemate aktivnu člansku karticu. ";
                         return RedirectToAction("Index", "Knjiga");
                     }
                 }

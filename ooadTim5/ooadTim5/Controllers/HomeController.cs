@@ -31,14 +31,14 @@ namespace ooadTim5.Controllers
         {
             var result = await _signInManager.PasswordSignInAsync(email, lozinka, false, false);
             if (result.Succeeded)
-            {
                 return RedirectToAction("Index", "Home");
-            }
+
             if (result.IsNotAllowed)
             {
                 ViewBag.Greska = "Morate potvrditi email adresu prije prijave. Provjerite inbox.";
                 return View();
             }
+
             ViewBag.Greska = "Pogrešan email ili lozinka. Provjerite da li ste potvrdili email!";
             return View();
         }
@@ -71,20 +71,42 @@ namespace ooadTim5.Controllers
                 var link = Url.Action("PotvrdiEmail", "Home",
                     new { userId = user.Id, token = token }, Request.Scheme);
 
-                await _emailService.PosaljiPotvrdu(email, link!);
+                try
+                {
+                    await _emailService.PosaljiPotvrdu(email, link!);
+                    ViewBag.Poruka = "Registracija uspješna! Provjerite email i kliknite na link za potvrdu.";
+                }
+                catch
+                {
+                    ViewBag.Poruka = "Registracija uspješna, ali email nije poslan. Kontaktirajte administratora.";
+                }
 
-                ViewBag.Poruka = "Registracija uspješna! Provjerite email i kliknite na link za potvrdu.";
                 return View();
             }
 
-            ViewBag.Greska = string.Join(", ", result.Errors.Select(e => e.Description));
+            ViewBag.Greska = string.Join(", ", result.Errors.Select(e => e.Code switch
+            {
+                "DuplicateUserName" => "Korisnik s ovim emailom već postoji.",
+                "DuplicateEmail" => "Korisnik s ovim emailom već postoji.",
+                "PasswordTooShort" => "Lozinka mora imati najmanje 6 karaktera.",
+                "PasswordRequiresNonAlphanumeric" => "Lozinka mora sadržavati poseban karakter (npr. @, !, #).",
+                "PasswordRequiresLower" => "Lozinka mora sadržavati malo slovo.",
+                "PasswordRequiresUpper" => "Lozinka mora sadržavati veliko slovo.",
+                "PasswordRequiresDigit" => "Lozinka mora sadržavati broj.",
+                _ => e.Description
+            }));
+
             return View();
         }
 
         public async Task<IActionResult> PotvrdiEmail(string userId, string token)
         {
             var user = await _userManager.FindByIdAsync(userId);
-            if (user == null) return NotFound();
+            if (user == null)
+            {
+                ViewBag.Greska = "Korisnik nije pronađen.";
+                return View("Registracija");
+            }
 
             var result = await _userManager.ConfirmEmailAsync(user, token);
             if (result.Succeeded)
@@ -93,7 +115,7 @@ namespace ooadTim5.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            ViewBag.Greska = "Greška pri potvrdi emaila.";
+            ViewBag.Greska = "Greška pri potvrdi emaila. Link je možda istekao.";
             return View("Registracija");
         }
 
