@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ooadTim5.Data;
@@ -30,6 +31,9 @@ builder.Services.ConfigureApplicationCookie(options =>
 builder.Services.AddScoped<ooadTim5.Services.EmailService>();
 
 QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
+
+builder.Services.AddDataProtection()
+    .PersistKeysToDbContext<ApplicationDbContext>();
 
 var app = builder.Build();
 
