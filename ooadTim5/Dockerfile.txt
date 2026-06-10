@@ -1,0 +1,19 @@
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
+WORKDIR /app
+EXPOSE 8080
+
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+WORKDIR /src
+COPY ["ooadTim5/ooadTim5.csproj", "ooadTim5/"]
+RUN dotnet restore "ooadTim5/ooadTim5.csproj"
+COPY . .
+WORKDIR "/src/ooadTim5"
+RUN dotnet build "ooadTim5.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "ooadTim5.csproj" -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "ooadTim5.dll"]
