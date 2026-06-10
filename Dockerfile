@@ -4,10 +4,10 @@ EXPOSE 8080
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-COPY ["ooadTim5/ooadTim5.csproj", "ooadTim5/"]
-RUN dotnet restore "ooadTim5/ooadTim5.csproj"
+COPY ["ooadTim5/ooadTim5/ooadTim5.csproj", "ooadTim5/ooadTim5/"]
+RUN dotnet restore "ooadTim5/ooadTim5/ooadTim5.csproj"
 COPY . .
-WORKDIR "/src/ooadTim5"
+WORKDIR "/src/ooadTim5/ooadTim5"
 RUN dotnet build "ooadTim5.csproj" -c Release -o /app/build
 
 FROM build AS publish
