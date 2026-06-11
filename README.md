@@ -4,15 +4,15 @@ Projekt razvijen u okviru kursa **Objektno Orijentisana Analiza i Dizajn (2025/2
 
 ## Opis projekta
 
-LitHub je web aplikacija za upravljanje bibliotekom koja omogućava digitalizaciju osnovnih bibliotečkih procesa, uključujući upravljanje knjigama, članovima biblioteke, posudbama i nabavkom novih knjiga.
+LitHub je web aplikacija za upravljanje bibliotekom koja omogućava digitalizaciju bibliotečkih procesa kroz upravljanje knjigama, članovima biblioteke, posudbama i nabavkom novih knjiga.
 
-Sistem je razvijen s ciljem unapređenja organizacije bibliotečkih resursa i pojednostavljivanja svakodnevnog rada bibliotekara i članova biblioteke.
+Sistem olakšava pretragu i evidenciju knjiga, upravljanje članstvom te praćenje procesa posudbe i vraćanja knjiga.
 
 ## Ključne funkcionalnosti
 
 * Registracija i prijava korisnika
 * Verifikacija email adrese
-* Pretraga knjiga po nazivu, autoru i kategoriji
+* Pretraga knjiga
 * Upravljanje članovima biblioteke
 * Posudba i vraćanje knjiga
 * Digitalne članske kartice sa QR kodom
@@ -23,6 +23,14 @@ Sistem je razvijen s ciljem unapređenja organizacije bibliotečkih resursa i po
 ## Online pristup
 
 🔗 https://grupa5-tim2.onrender.com
+
+## Konekcijski string
+
+```json
+"ConnectionStrings": {
+  "DefaultConnection": "Data Source=SQL1001.site4now.net;Initial Catalog=db_ac8e4c_ooadgrupa5tim2;User Id=db_ac8e4c_ooadgrupa5tim2_admin;Password=YOUR_DB_PASSWORD;Encrypt=True;TrustServerCertificate=True;"
+}
+```
 
 ## Razvojni tim
 
