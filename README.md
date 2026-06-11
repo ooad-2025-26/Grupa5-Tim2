@@ -24,6 +24,14 @@ Sistem olakšava pretragu i evidenciju knjiga, upravljanje članstvom te praćen
 
 🔗 https://grupa5-tim2.onrender.com
 
+## Testni korisnici
+
+| Uloga         | Email                                             | Lozinka        |
+| ------------- | ------------------------------------------------- | -------------- |
+| Administrator | [admin@library.com](mailto:admin@library.com)     | Admin123!      |
+| Bibliotekar   | [bib@library.com](mailto:bib@library.com)         | Bib123!        |
+| Član          | [akunic1@etf.unsa.ba](mailto:akunic1@etf.unsa.ba) | Biblioteka123. |
+
 ## Konekcijski string
 
 ```json
