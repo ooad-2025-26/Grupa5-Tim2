@@ -21,7 +21,7 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddControllersWithViews();
-
+builder.Services.AddHttpClient<ooadTim5.Services.EmailService>();
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Home/Prijava";
