@@ -69,7 +69,9 @@ namespace ooadTim5.Controllers
                 await _userManager.AddToRoleAsync(user, "clan");
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 var link = Url.Action("PotvrdiEmail", "Home",
-                    new { userId = user.Id, token = token }, Request.Scheme);
+                    new { userId = user.Id, token = token },
+                    protocol: "https",
+                    host: "grupa5-tim2.onrender.com");
 
                 try
                 {

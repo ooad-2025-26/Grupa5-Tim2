@@ -94,7 +94,7 @@
 
             @if (kartica != null)
             {
-                var qrUrl = $"{Context.Request.Scheme}://{Context.Request.Host}/Korisnici/Profil";
+                var qrUrl = "https://grupa5-tim2.onrender.com/Korisnici/Profil";
                 var qrApiUrl = $"https://api.qrserver.com/v1/create-qr-code/?size=120x120&data={Uri.EscapeDataString(qrUrl)}";
                 <div style="text-align: center;">
                     <p style="color: #999; font-size: 0.75rem; margin-bottom: 6px;">
