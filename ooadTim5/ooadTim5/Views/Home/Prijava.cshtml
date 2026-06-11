@@ -2,14 +2,57 @@
     ViewData["Title"] = "Prijava";
 }
 
-<div style="display: flex; min-height: 85vh; align-items: center; padding: 0 60px; gap: 40px;">
-    <div style="flex: 0 0 40%;">
-        <div style="background: white; border-radius: 16px; padding: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
-            <h2 style="text-align: center; color: #1a4a3a; font-weight: 700; margin-bottom: 30px;">Prijava</h2>
+<style>
+    .prijava-wrapper {
+        display: flex;
+        min-height: 85vh;
+        align-items: center;
+        padding: 0 60px;
+        gap: 40px;
+    }
+
+    .prijava-forma {
+        flex: 0 0 40%;
+    }
+
+    .prijava-slika {
+        flex: 0 0 60%;
+        height: 85vh;
+        overflow: hidden;
+        margin-right: -60px;
+    }
+
+    @@media (max-width: 768px) {
+        .prijava-wrapper {
+            padding: 30px 20px;
+            flex-direction: column;
+            min-height: unset;
+        }
+
+        .prijava-forma {
+            flex: unset;
+            width: 100%;
+        }
+
+        .prijava-slika {
+            display: none;
+        }
+    }
+</style>
+
+<div class="prijava-wrapper">
+    <div class="prijava-forma">
+        <div style="background: white; border-radius: 16px; padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+            <h2 style="text-align: center; color: #1a4a3a; font-weight: 700;
+                margin-bottom: 30px;">
+                Prijava
+            </h2>
 
             @if (ViewBag.Greska != null)
             {
-                <div style="background: #ffe0e0; color: #c00; padding: 10px; border-radius: 8px; margin-bottom: 15px;">
+                <div style="background: #ffe0e0; color: #c00; padding: 10px;
+                    border-radius: 8px; margin-bottom: 15px;">
                     @ViewBag.Greska
                 </div>
             }
@@ -35,7 +78,7 @@
         </div>
     </div>
 
-    <div style="flex: 0 0 60%; height: 85vh; overflow: hidden; margin-right: -60px;">
+    <div class="prijava-slika">
         <img src="~/images/profilnaa.png"
              style="width: 100%; height: 100%; object-fit: cover; object-position: left center;" />
     </div>

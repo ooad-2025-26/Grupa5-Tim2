@@ -2,21 +2,65 @@
     ViewData["Title"] = "Registracija";
 }
 
-<div style="display: flex; min-height: 85vh; align-items: center; padding: 0 60px; gap: 40px;">
-    <div style="flex: 0 0 40%;">
-        <div style="background: white; border-radius: 16px; padding: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
-            <h2 style="text-align: center; color: #1a4a3a; font-weight: 700; margin-bottom: 30px;">Registracija</h2>
+<style>
+    .registracija-wrapper {
+        display: flex;
+        min-height: 85vh;
+        align-items: center;
+        padding: 0 60px;
+        gap: 40px;
+    }
+
+    .registracija-forma {
+        flex: 0 0 40%;
+    }
+
+    .registracija-slika {
+        flex: 0 0 60%;
+        height: 85vh;
+        overflow: hidden;
+        margin-right: -60px;
+    }
+
+    @@media (max-width: 768px) {
+        .registracija-wrapper {
+            padding: 30px 20px;
+            flex-direction: column;
+            min-height: unset;
+        }
+
+        .registracija-forma {
+            flex: unset;
+            width: 100%;
+        }
+
+        .registracija-slika {
+            display: none;
+        }
+    }
+</style>
+
+<div class="registracija-wrapper">
+    <div class="registracija-forma">
+        <div style="background: white; border-radius: 16px; padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+            <h2 style="text-align: center; color: #1a4a3a; font-weight: 700;
+                margin-bottom: 30px;">
+                Registracija
+            </h2>
 
             @if (ViewBag.Greska != null)
             {
-                <div style="background: #ffe0e0; color: #c00; padding: 10px; border-radius: 8px; margin-bottom: 15px;">
+                <div style="background: #ffe0e0; color: #c00; padding: 10px;
+                    border-radius: 8px; margin-bottom: 15px;">
                     @ViewBag.Greska
                 </div>
             }
 
             @if (ViewBag.Poruka != null)
             {
-                <div style="background: #e0f5e9; color: #1a4a3a; padding: 10px; border-radius: 8px; margin-bottom: 15px;">
+                <div style="background: #e0f5e9; color: #1a4a3a; padding: 10px;
+                    border-radius: 8px; margin-bottom: 15px;">
                     @ViewBag.Poruka
                 </div>
             }
@@ -56,7 +100,7 @@
         </div>
     </div>
 
-    <div style="flex: 0 0 60%; height: 85vh; overflow: hidden; margin-right: -60px;">
+    <div class="registracija-slika">
         <img src="~/images/profilnaa.png"
              style="width: 100%; height: 100%; object-fit: cover; object-position: left center;" />
     </div>
