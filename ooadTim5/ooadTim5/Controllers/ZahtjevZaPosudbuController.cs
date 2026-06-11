@@ -39,7 +39,7 @@ namespace ooadTim5.Controllers
                 var svi = await query.ToListAsync();
 
                 var korisnici = await _context.Users
-                    .ToDictionaryAsync(x => x.Id, x => x.UserName ?? x.Email);
+                    .ToDictionaryAsync(x => x.Id, x => x.Email ?? x.UserName ?? x.Id);
 
                 ViewBag.Korisnici = korisnici;
 
