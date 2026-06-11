@@ -22,6 +22,35 @@ namespace ooadTim5.Controllers
             return View();
         }
 
+        public IActionResult ONama()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Prijava()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Prijava(string email, string lozinka)
+        {
+            var result = await _signInManager.PasswordSignInAsync(email, lozinka, false, false);
+            if (result.Succeeded)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            ViewBag.Greska = "Pogrešan email ili lozinka.";
+            return View();
+        }
+
+        public async Task<IActionResult> Odjava()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
+        }
+
         [HttpGet]
         public IActionResult Registracija()
         {
