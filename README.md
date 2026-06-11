@@ -1,67 +1,49 @@
 # 📚 LitHub
 
-LitHub je web aplikacija za upravljanje bibliotekom razvijena u okviru projekta iz predmeta Objektno Orijentisana Analiza i Dizajn na Elektrotehničkom fakultetu Univerziteta u Sarajevu.
+Projekt razvijen u okviru kursa **Objektno Orijentisana Analiza i Dizajn (2025/26)** na Elektrotehničkom fakultetu Univerziteta u Sarajevu.
 
-Aplikacija omogućava jednostavno upravljanje knjigama, članovima biblioteke, posudbama i nabavkom novih knjiga. Cilj projekta bio je digitalizovati bibliotečke procese i unaprijediti organizaciju rada biblioteke kroz moderan informacioni sistem.
+## Opis projekta
 
-## 🌐 Demo
+LitHub je web aplikacija za upravljanje bibliotekom koja omogućava digitalizaciju bibliotečkih procesa kroz upravljanje knjigama, članovima biblioteke, posudbama i nabavkom novih knjiga.
 
-https://grupa5-tim2.onrender.com/
+Sistem olakšava pretragu i evidenciju knjiga, upravljanje članstvom te praćenje procesa posudbe i vraćanja knjiga.
 
----
+## Ključne funkcionalnosti
 
-## ✨ Funkcionalnosti
+* Registracija i prijava korisnika
+* Verifikacija email adrese
+* Pretraga knjiga
+* Upravljanje članovima biblioteke
+* Posudba i vraćanje knjiga
+* Digitalne članske kartice sa QR kodom
+* Generisanje PDF članskih kartica
+* Upravljanje zahtjevima za posudbu
+* Upravljanje dobavljačima i nabavkom knjiga
 
-- Registracija i prijava korisnika
-- Verifikacija email adrese
-- Pretraga knjiga po različitim kriterijima
-- Upravljanje članovima biblioteke
-- Posudba i vraćanje knjiga
-- Evidencija kašnjenja pri vraćanju knjiga
-- Digitalne članske kartice sa QR kodom
-- Generisanje PDF članskih kartica
-- Upravljanje zahtjevima za posudbu
-- Upravljanje dobavljačima i nabavkama knjiga
+## Online pristup
 
----
+🔗 https://grupa5-tim2.onrender.com
 
-## 🚀 Dodatno implementirane funkcionalnosti
+## Testni korisnici
 
-Pored zahtjeva definisanih početnom specifikacijom, u sistem su implementirana i dodatna poboljšanja:
+| Uloga         | Email                                             | Lozinka        |
+| ------------- | ------------------------------------------------- | -------------- |
+| Administrator | [admin@library.com](mailto:admin@library.com)     | Admin123!      |
+| Bibliotekar   | [bib@library.com](mailto:bib@library.com)         | Bib123!        |
+| Član          | [akunic1@etf.unsa.ba](mailto:akunic1@etf.unsa.ba) | Biblioteka123. |
 
-- Verifikacija email adrese putem Brevo servisa
-- QR kod integrisan u članske kartice
-- Generisanje PDF verzije članske kartice
-- Dodatne provjere prilikom posudbe knjiga
-- Naprednije upravljanje procesom nabavke
+## Konekcijski string
 
----
+```json
+"ConnectionStrings": {
+  "DefaultConnection": "Data Source=SQL1001.site4now.net;Initial Catalog=db_ac8e4c_ooadgrupa5tim2;User Id=db_ac8e4c_ooadgrupa5tim2_admin;Password=YOUR_DB_PASSWORD;Encrypt=True;TrustServerCertificate=True;"
+}
+```
 
-## 🛠️ Korištene tehnologije
+## Razvojni tim
 
-- ASP.NET Core MVC
-- Entity Framework Core
-- SQL Server
-- Bootstrap 5
-- HTML5
-- CSS3
-- JavaScript
-- QRCoder
-- Brevo (Sendinblue)
+* Sarah Mrakić
+* Samra Salkica
+* Amina Kunić
 
----
-
-## 👩‍💻 Tim
-
-- Sarah Mrakić
-- Samra Salkica
-- Amina Kunić
-
-Elektrotehnički fakultet Univerziteta u Sarajevu  
-Objektno Orijentisana Analiza i Dizajn (OOAD)
-
----
-
-## 📄 Napomena
-
-Ovaj projekat razvijen je u edukativne svrhe kao studentski projekat.
+Elektrotehnički fakultet Univerziteta u Sarajevu
