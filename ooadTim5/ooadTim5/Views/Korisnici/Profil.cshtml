@@ -3,19 +3,47 @@
     var kartica = ViewBag.Kartica as ooadTim5.Models.ClanskaKartica;
 }
 
-<div style="padding: 40px 60px; max-width: 800px;">
+<style>
+    .profil-wrapper {
+        padding: 24px 20px;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .profil-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+    }
+
+    @@media (max-width: 480px) {
+        .profil-grid {
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        .profil-wrapper {
+            padding: 16px 12px;
+        }
+    }
+</style>
+
+<div class="profil-wrapper">
 
     <!-- Header -->
-    <div style="background: #1a4a3a; border-radius: 16px 16px 0 0; padding: 30px 36px;
-        display: flex; align-items: center; gap: 20px;">
-        <div style="width: 60px; height: 60px; border-radius: 14px; background: #c8621a;
+    <div style="background: #1a4a3a; border-radius: 16px 16px 0 0; padding: 24px 28px;
+        display: flex; align-items: center; gap: 16px; overflow: hidden;">
+        <div style="width: 52px; height: 52px; border-radius: 12px; background: #c8621a;
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.6rem; font-weight: 800; color: white;">
+            font-size: 1.4rem; font-weight: 800; color: white; flex-shrink: 0;">
             @(ViewBag.Email?.ToString().Substring(0, 1).ToUpper())
         </div>
-        <div>
-            <h2 style="color: white; font-weight: 800; margin: 0;">@ViewBag.Email</h2>
-            <p style="color: rgba(255,255,255,0.7); margin: 4px 0 0 0; font-size: 0.9rem;">
+        <div style="overflow: hidden;">
+            <h2 style="color: white; font-weight: 800; margin: 0; font-size: 1.1rem;
+                white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                @ViewBag.Email
+            </h2>
+            <p style="color: rgba(255,255,255,0.7); margin: 4px 0 0 0; font-size: 0.85rem;">
                 Član biblioteke
             </p>
         </div>
@@ -23,15 +51,16 @@
 
     <!-- Info -->
     <div style="background: white; border-radius: 0 0 16px 16px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 36px;">
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 28px;">
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+        <div class="profil-grid">
             <div>
                 <p style="color: #c8621a; font-size: 0.75rem; font-weight: 700;
                     text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;">
                     Email adresa
                 </p>
-                <p style="font-weight: 600; font-size: 0.95rem; color: #1a1a1a;">
+                <p style="font-weight: 600; font-size: 0.9rem; color: #1a1a1a;
+                    word-break: break-all;">
                     @ViewBag.Email
                 </p>
             </div>
@@ -41,7 +70,7 @@
                     text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;">
                     Broj članske kartice
                 </p>
-                <p style="font-weight: 600; font-size: 0.95rem; color: #1a1a1a;">
+                <p style="font-weight: 600; font-size: 0.9rem; color: #1a1a1a;">
                     @(kartica?.BrojKartice ?? "Nema kartice")
                 </p>
             </div>
@@ -49,9 +78,9 @@
             <div>
                 <p style="color: #c8621a; font-size: 0.75rem; font-weight: 700;
                     text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;">
-                    Datum izdavanja kartice
+                    Datum izdavanja
                 </p>
-                <p style="font-weight: 600; font-size: 0.95rem; color: #1a1a1a;">
+                <p style="font-weight: 600; font-size: 0.9rem; color: #1a1a1a;">
                     @(kartica != null ? kartica.DatumIzdavanja.ToString("dd. MMMM yyyy.") : "-")
                 </p>
             </div>
@@ -61,50 +90,60 @@
                     text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;">
                     Članstvo važi do
                 </p>
-                <p style="font-weight: 600; font-size: 0.95rem; color: #1a1a1a;">
+                <p style="font-weight: 600; font-size: 0.9rem; color: #1a1a1a;">
                     @(kartica != null ? kartica.ClanstvoVaziDo.ToString("dd. MMMM yyyy.") : "-")
                 </p>
             </div>
         </div>
 
         <!-- Status + QR -->
-        <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid #f0ebe4;
-            display: flex; justify-content: space-between; align-items: center;">
+        <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid #f0ebe4;">
 
-            <div>
-                @if (kartica != null && kartica.Aktivan)
-                {
-                    <span style="color: #2e7d32; font-weight: 700; font-size: 0.88rem;">
-                        ● AKTIVAN PROFIL
-                    </span>
-                }
-                else
-                {
-                    <span style="color: #c62828; font-weight: 700; font-size: 0.88rem;">
-                        ● NEAKTIVAN PROFIL
-                    </span>
-                }
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                <div>
+                    @if (kartica != null && kartica.Aktivan)
+                    {
+                        <span style="color: #2e7d32; font-weight: 700; font-size: 0.88rem;">
+                            ● AKTIVAN PROFIL
+                        </span>
+                    }
+                    else
+                    {
+                        <span style="color: #c62828; font-weight: 700; font-size: 0.88rem;">
+                            ● NEAKTIVAN PROFIL
+                        </span>
+                    }
+                    @if (kartica != null)
+                    {
+                        <span style="color: #999; font-size: 0.85rem; margin-left: 10px;">
+                            ID: @kartica.BrojKartice
+                        </span>
+                    }
+                </div>
+
                 @if (kartica != null)
                 {
-                    <span style="color: #999; font-size: 0.85rem; margin-left: 12px;">
-                        ID: @kartica.BrojKartice
-                    </span>
+                    var qrUrl = $"{Context.Request.Scheme}://{Context.Request.Host}/Korisnici/Profil";
+                    var qrApiUrl = $"https://api.qrserver.com/v1/create-qr-code/?size=110x110&data={Uri.EscapeDataString(qrUrl)}";
+                    <div style="text-align: center;">
+                        <p style="color: #999; font-size: 0.75rem; margin-bottom: 6px;">
+                            Skeniraj za pristup profilu
+                        </p>
+                        <img src="@qrApiUrl" alt="QR kod"
+                             style="border: 3px solid #f0ebe4; border-radius: 8px;" />
+                        <div style="margin-top: 10px;">
+                            <a href="/ClanskeKartice/DownloadPDF/@kartica.Id"
+                               style="background-color: #1a4a3a; color: white;
+                                border-radius: 25px; padding: 8px 20px;
+                                font-weight: 700; font-size: 0.8rem;
+                                letter-spacing: 0.08rem; text-transform: uppercase;
+                                text-decoration: none; display: inline-block;">
+                                ⬇ Preuzmi karticu
+                            </a>
+                        </div>
+                    </div>
                 }
             </div>
-
-            @if (kartica != null)
-            {
-                var qrUrl = "https://grupa5-tim2.onrender.com/Korisnici/Profil";
-                var qrApiUrl = $"https://api.qrserver.com/v1/create-qr-code/?size=120x120&data={Uri.EscapeDataString(qrUrl)}";
-                <div style="text-align: center;">
-                    <p style="color: #999; font-size: 0.75rem; margin-bottom: 6px;">
-                        Skeniraj za pristup profilu
-                    </p>
-                    <img src="@qrApiUrl" alt="QR kod"
-                         style="border: 3px solid #f0ebe4; border-radius: 8px;" />
-                </div>
-            }
-
         </div>
     </div>
 </div>
