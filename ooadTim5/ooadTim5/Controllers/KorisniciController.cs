@@ -203,6 +203,21 @@ namespace ooadTim5.Controllers
                 return NotFound();
             }
 
+            // Obriši zahtjeve korisnika
+            var zahtjevi = await _context.Zahtjevi
+                .Where(z => z.KorisnikId == id)
+                .ToListAsync();
+            _context.Zahtjevi.RemoveRange(zahtjevi);
+
+            // Obriši člansku karticu
+            var kartica = await _context.ClanskeKartice
+                .FirstOrDefaultAsync(k => k.KorisnikId == id);
+            if (kartica != null)
+                _context.ClanskeKartice.Remove(kartica);
+
+            await _context.SaveChangesAsync();
+
+            // Sad obriši korisnika
             await _userManager.DeleteAsync(user);
             return RedirectToAction("Index");
         }
