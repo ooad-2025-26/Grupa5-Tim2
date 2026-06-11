@@ -1,4 +1,6 @@
-﻿@{
+﻿@using System.Globalization
+
+@{
     ViewData["Title"] = "Moj profil";
     var kartica = ViewBag.Kartica as ooadTim5.Models.ClanskaKartica;
 }
@@ -81,7 +83,7 @@
                     Datum izdavanja
                 </p>
                 <p style="font-weight: 600; font-size: 0.9rem; color: #1a1a1a;">
-                    @(kartica != null ? kartica.DatumIzdavanja.ToString("dd. MMMM yyyy.") : "-")
+                    @(kartica != null ? kartica.DatumIzdavanja.ToString("dd. MMMM yyyy.", new CultureInfo("bs-Latn-BA")) : "-")
                 </p>
             </div>
 
@@ -91,7 +93,7 @@
                     Članstvo važi do
                 </p>
                 <p style="font-weight: 600; font-size: 0.9rem; color: #1a1a1a;">
-                    @(kartica != null ? kartica.ClanstvoVaziDo.ToString("dd. MMMM yyyy.") : "-")
+                    @(kartica != null ? kartica.ClanstvoVaziDo.ToString("dd. MMMM yyyy.", new CultureInfo("bs-Latn-BA")) : "-")
                 </p>
             </div>
         </div>
